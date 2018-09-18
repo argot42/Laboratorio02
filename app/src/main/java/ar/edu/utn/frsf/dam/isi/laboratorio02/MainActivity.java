@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
         btnListaProductos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(MainActivity.this, ProductoRepository.class);
-                //startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, ListaProductos.class);
+                startActivity(intent);
             }
         });
     }
