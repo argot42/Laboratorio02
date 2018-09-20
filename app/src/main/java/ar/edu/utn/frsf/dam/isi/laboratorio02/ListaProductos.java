@@ -2,6 +2,7 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +11,7 @@ import android.widget.Spinner;
 
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoAdapter;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
@@ -30,18 +32,8 @@ public class ListaProductos extends AppCompatActivity {
 
         // actualizar lista de productos al cambiar opción en spinner
         final RecyclerView lstProductos = (RecyclerView) findViewById(R.id.lstProductos);
-        /*cmbProductosCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Categoria categoria = (Categoria) cmbProductosCategoria.getSelectedItem();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
-
+        lstProductos.setHasFixedSize(true);
+        lstProductos.setLayoutManager(new LinearLayoutManager(this));
+        lstProductos.setAdapter(new ProductoAdapter(productoRespository.getLista()));
     }
 }
