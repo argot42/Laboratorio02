@@ -9,12 +9,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import java.util.List;
-
 import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoAdapter;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class ListaProductos extends AppCompatActivity {
 
@@ -34,6 +33,24 @@ public class ListaProductos extends AppCompatActivity {
         final RecyclerView lstProductos = (RecyclerView) findViewById(R.id.lstProductos);
         lstProductos.setHasFixedSize(true);
         lstProductos.setLayoutManager(new LinearLayoutManager(this));
-        lstProductos.setAdapter(new ProductoAdapter(productoRespository.getLista()));
+        // decoración de la lista
+        lstProductos.addItemDecoration(new VerticalSpaceItemDecoration(48));
+        lstProductos.addItemDecoration(new DividerItemDecoration(this));
+
+        final ProductoAdapter productoAdapter = new ProductoAdapter(productoRespository.buscarPorCategoria(productoRespository.getCategorias().get(0)));
+        lstProductos.setAdapter(productoAdapter);
+
+        cmbProductosCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                productoAdapter.setProductoList(productoRespository.buscarPorCategoria((Categoria) parent.getItemAtPosition(position)));
+                productoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }
