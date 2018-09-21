@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -62,5 +61,13 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
     @Override
     public int getItemCount() {
         return productoList.size();
+    }
+
+    public Producto getItem() {
+        if (this.lastSelectedPosition < 0) {
+            return null;
+        }
+
+        return this.productoList.get(this.lastSelectedPosition);
     }
 }

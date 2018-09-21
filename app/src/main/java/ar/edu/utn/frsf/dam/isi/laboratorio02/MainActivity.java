@@ -40,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListaProductos.class);
                 startActivity(intent);
+
+                /*Intent intent = new Intent(MainActivity.this, ListaProductos.class);
+                intent.putExtra("NUEVO_PEDIDO", 1);
+                startActivityForResult(intent, 1);*/
             }
         });
     }

@@ -1,5 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoAdapter;
@@ -14,6 +18,8 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class ListaProductos extends AppCompatActivity {
 
@@ -52,5 +58,38 @@ public class ListaProductos extends AppCompatActivity {
 
             }
         });
+
+        final EditText edtProductoCantidad = (EditText) findViewById(R.id.edtProdCantidad);
+        final Button btnProdAddPedido = (Button) findViewById(R.id.btnProdAddPedido);
+
+        // chequear si la actividad padre genero un intent con un extra NUEVO_PEDIDO = 1
+        // si es true habilitar edittext, button y setear clicklistener
+        if (getIntent().getIntExtra("NUEVO_PEDIDO", 0) == 1) {
+            edtProductoCantidad.setEnabled(true);
+            btnProdAddPedido.setEnabled(true);
+
+            btnProdAddPedido.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Producto prod = productoAdapter.getItem();
+                    Intent output = new Intent();
+
+                    if (prod == null) {
+                        setResult(Activity.RESULT_CANCELED, output);
+
+                    } else {
+                        output.putExtra("producto_id", prod.getId());
+                        output.putExtra("producto_nombre", prod.getNombre());
+                        output.putExtra("producto_descripcion", prod.getDescripcion());
+                        output.putExtra("producto_precio", prod.getPrecio());
+                        output.putExtra("producto_categoria", prod.getCategoria().getNombre());
+                        output.putExtra("producto_cantidad", Integer.valueOf(edtProductoCantidad.getText().toString()));
+                        setResult(Activity.RESULT_OK, output);
+                    }
+
+                    finish();
+                }
+            });
+        }
     }
 }
