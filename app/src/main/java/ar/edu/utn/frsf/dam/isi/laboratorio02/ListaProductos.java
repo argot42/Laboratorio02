@@ -78,12 +78,12 @@ public class ListaProductos extends AppCompatActivity {
                         setResult(Activity.RESULT_CANCELED, output);
 
                     } else {
-                        output.putExtra("producto_id", prod.getId());
-                        output.putExtra("producto_nombre", prod.getNombre());
-                        output.putExtra("producto_descripcion", prod.getDescripcion());
-                        output.putExtra("producto_precio", prod.getPrecio());
-                        output.putExtra("producto_categoria", prod.getCategoria().getNombre());
-                        output.putExtra("producto_cantidad", Integer.valueOf(edtProductoCantidad.getText().toString()));
+                        output.putExtra("idProducto", prod.getId());
+                        //output.putExtra("producto_nombre", prod.getNombre());
+                        //output.putExtra("producto_descripcion", prod.getDescripcion());
+                        //output.putExtra("producto_precio", prod.getPrecio());
+                        //output.putExtra("producto_categoria", prod.getCategoria().getNombre());
+                        output.putExtra("cantidad", Integer.valueOf(edtProductoCantidad.getText().toString()));
                         setResult(Activity.RESULT_OK, output);
                     }
 
