@@ -10,6 +10,17 @@
     <string name="edtProdCantidadDefault">0</string>
     <string name="btnProdAddPedidoText">Agregar</string>
 
+
+    <!-- Realizar -->
+    <string name="pedido_titulo">Datos del Pedido</string>
+    <string name="pedido_lbl_correo">Correo Electrónico: </string>
+    <string name="pedido_lbl_modo_entrega">Modo de Entrega: </string>
+    <string name="pedido_lbl_direccion">Dirección de Envío: </string>
+    <string name="pedido_lbl_hora_entrega">Hora solicitada (hh:mm): </string>
+    <string name="edtPedidoHoraEntregaDefault">00:00</string>
+    <string name="tvTotalPedido">Total pedido: $0.00</string>
+
+
     <!-- HistorialPedidos -->
     <string name="tvTituloHistorial">Pedidos realizados</string>
     <string name="btnHistorialNuevo">Nuevo</string>
