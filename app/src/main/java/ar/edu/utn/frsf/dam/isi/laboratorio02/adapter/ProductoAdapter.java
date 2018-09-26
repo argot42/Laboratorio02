@@ -46,9 +46,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
     @Override
     public ProductoAdapter.ProductoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.producto_row, parent, false);
-        ProductoViewHolder vh = new ProductoViewHolder(v);
-
-        return vh;
+        return new ProductoViewHolder(v);
     }
 
     @Override
