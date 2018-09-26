@@ -40,10 +40,5 @@ public class HistorialPedidos extends AppCompatActivity {
         lstHistorial.setHasFixedSize(true);
         lstHistorial.setLayoutManager(new LinearLayoutManager(this));
         lstHistorial.setAdapter(new HistorialAdapter(new PedidoRepository().getLista()));
-        /*PedidoRepository pr = new PedidoRepository();
-        System.out.println("HISTORIALPEDIDOS");
-        System.out.println(pr.getLista());*/
-        System.out.println("HISTORIALPEDIDOS");
-        System.out.println(new PedidoRepository().getLista());
     }
 }

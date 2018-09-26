@@ -94,6 +94,12 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
         }
         holder.tvCantidadItems.setText(String.format("Items: %d", cantidad));
         holder.tvPrecio.setText(String.format("A pagar: $%.2f", deuda));
+
+        if (pedido.getRetirar()) {
+            holder.ivTipoEntrega.setImageResource(R.drawable.ic_retirar);
+        } else {
+            holder.ivTipoEntrega.setImageResource(R.drawable.ic_delivery);
+        }
     }
 
     @Override

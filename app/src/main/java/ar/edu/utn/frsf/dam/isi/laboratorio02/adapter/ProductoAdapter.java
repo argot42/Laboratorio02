@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +46,9 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
     @Override
     public ProductoAdapter.ProductoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.producto_row, parent, false);
-        return new ProductoViewHolder(v);
+        //View v = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.producto_row, parent, false);
+        //return new ProductoViewHolder(v);
+        return new ProductoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.producto_row, parent, false));
     }
 
     @Override
