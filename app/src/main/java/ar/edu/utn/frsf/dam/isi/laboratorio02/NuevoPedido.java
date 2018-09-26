@@ -4,17 +4,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
+
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
+
+import static android.R.layout.simple_list_item_single_choice;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -98,8 +99,12 @@ public class NuevoPedido extends AppCompatActivity {
 
             }
         });
+        final String[] datos= new String[]{"Elem1","Elem2","Elem3"};
+        ArrayAdapter<String> itemsAdapter =
+                new ArrayAdapter<>(this, simple_list_item_single_choice, datos);
+        ListView listView = findViewById(R.id.lstPedidoItems);
+        listView.setAdapter(itemsAdapter);
 
     }
-
 
 }

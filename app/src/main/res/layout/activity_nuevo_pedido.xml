@@ -79,13 +79,13 @@
         android:inputType="time"
         android:text="00:00" />
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/lstPedidoItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical">
 
-    </android.support.v7.widget.RecyclerView>
+        android:choiceMode="singleChoice"
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
