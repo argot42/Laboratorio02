@@ -1,5 +1,6 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,7 @@ public class Pedido {
 
     private Integer id;
     private Date fecha;
+    private Time horaEnvio;
     private List<PedidoDetalle> detalle;
     private Estado estado;
     private String direccionEnvio;
@@ -18,6 +20,14 @@ public class Pedido {
 
     public String getDireccionEnvio() {
         return direccionEnvio;
+    }
+
+    public Time getHoraEnvio() {
+        return horaEnvio;
+    }
+
+    public void setHoraEnvio(Time horaEnvio) {
+        this.horaEnvio = horaEnvio;
     }
 
     public void setDireccionEnvio(String direccionEnvio) {
@@ -106,6 +116,7 @@ public class Pedido {
         return "Pedido{" +
                 "id=" + id +
                 ", fecha=" + fecha +
+                ", hora Envío=" + horaEnvio +
                 ", estado=" + estado +
                 ", direccionEnvio='" + direccionEnvio + '\'' +
                 ", mailContacto='" + mailContacto + '\'' +
