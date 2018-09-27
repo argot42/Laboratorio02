@@ -85,7 +85,9 @@
         android:layout_height="wrap_content"
 
         android:choiceMode="singleChoice"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+    </ListView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
