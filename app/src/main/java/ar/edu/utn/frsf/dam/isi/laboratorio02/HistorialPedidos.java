@@ -10,6 +10,8 @@ import android.widget.Button;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.HistorialAdapter;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 
 public class HistorialPedidos extends AppCompatActivity {
 
@@ -39,6 +41,8 @@ public class HistorialPedidos extends AppCompatActivity {
         final RecyclerView lstHistorial = (RecyclerView) findViewById(R.id.lstHistorialPedidos);
         lstHistorial.setHasFixedSize(true);
         lstHistorial.setLayoutManager(new LinearLayoutManager(this));
+        lstHistorial.addItemDecoration(new VerticalSpaceItemDecoration(48));
+        lstHistorial.addItemDecoration(new DividerItemDecoration(this));
         lstHistorial.setAdapter(new HistorialAdapter(new PedidoRepository().getLista()));
     }
 }

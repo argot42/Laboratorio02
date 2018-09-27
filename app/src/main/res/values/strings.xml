@@ -28,4 +28,5 @@
 
     <!-- fila pedidos -->
     <string name="btnCancelarPedido">Cancelar</string>
+    <string name="btnVerDetalle">Ver Detalle</string>
 </resources>

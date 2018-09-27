@@ -47,6 +47,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/btnCancelarPedido" />
+
+        <Button
+            android:id="@+id/btnVerDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/btnVerDetalle" />
     </LinearLayout>
 
 </LinearLayout>

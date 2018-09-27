@@ -1,5 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -14,14 +16,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.HistorialPedidos;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.MainActivity;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.NuevoPedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.R;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
 public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.HistorialViewHolder> {
     private List<Pedido> listaPedidos;
 
-    public class HistorialViewHolder extends RecyclerView.ViewHolder {
+    public class HistorialViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         TextView tvEmailPedido;
         TextView tvHoraEntrega;
         TextView tvCantidadItems;
@@ -30,15 +36,43 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
         ImageView ivTipoEntrega;
         Button btnCancelarPedido;
 
+
         public HistorialViewHolder(View base) {
             super(base);
-            this.tvEmailPedido = (TextView) base.findViewById(R.id.tvEmailPedido);
-            this.tvHoraEntrega = (TextView) base.findViewById(R.id.tvHoraEntrega);
-            this.tvCantidadItems = (TextView) base.findViewById(R.id.tvCantidadItems);
-            this.tvPrecio = (TextView) base.findViewById(R.id.tvPrecio);
-            this.tvEstado = (TextView) base.findViewById(R.id.tvEstado);
-            this.ivTipoEntrega = (ImageView) base.findViewById(R.id.ivTipoEntrega);
-            this.btnCancelarPedido = (Button) base.findViewById(R.id.btnCancelarPedido);
+            tvEmailPedido = (TextView) base.findViewById(R.id.tvEmailPedido);
+            tvHoraEntrega = (TextView) base.findViewById(R.id.tvHoraEntrega);
+            tvCantidadItems = (TextView) base.findViewById(R.id.tvCantidadItems);
+            tvPrecio = (TextView) base.findViewById(R.id.tvPrecio);
+            tvEstado = (TextView) base.findViewById(R.id.tvEstado);
+            ivTipoEntrega = (ImageView) base.findViewById(R.id.ivTipoEntrega);
+            btnCancelarPedido = (Button) base.findViewById(R.id.btnCancelarPedido);
+
+            btnCancelarPedido.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Pedido p = listaPedidos.get(getAdapterPosition());
+                    switch (p.getEstado()) {
+                        case REALIZADO:
+                        case ACEPTADO:
+                        case EN_PREPARACION:
+                            p.setEstado(Pedido.Estado.CANCELADO);
+                            notifyItemChanged(getAdapterPosition());
+                    }
+                }
+            });
+
+            base.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            Pedido p = listaPedidos.get(getAdapterPosition());
+            Context context = view.getContext();
+            Intent i = new Intent(context, NuevoPedido.class);
+            i.putExtra("pedido_id", p.getId());
+            context.startActivity(i);
+
+            return true;
         }
     }
 
@@ -95,6 +129,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
         holder.tvCantidadItems.setText(String.format("Items: %d", cantidad));
         holder.tvPrecio.setText(String.format("A pagar: $%.2f", deuda));
 
+        // seleccionar imagen para tipo de entrega
         if (pedido.getRetirar()) {
             holder.ivTipoEntrega.setImageResource(R.drawable.ic_retirar);
         } else {
