@@ -66,7 +66,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
             Pedido p = listaPedidos.get(getAdapterPosition());
             Context context = view.getContext();
             Intent i = new Intent(context, NuevoPedido.class);
-            i.putExtra("pedido_id", p.getId());
+            i.putExtra("idPedidoSeleccionado", p.getId());
             context.startActivity(i);
 
             return true;
