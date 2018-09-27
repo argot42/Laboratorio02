@@ -16,11 +16,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.HistorialPedidos;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.MainActivity;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.NuevoPedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.R;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
