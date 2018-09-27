@@ -22,6 +22,7 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class ListaProductos extends AppCompatActivity {
 
+    static final int LISTAPRODUCTO_REQUEST = 9;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
