@@ -33,6 +33,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
         TextView tvEstado;
         ImageView ivTipoEntrega;
         Button btnCancelarPedido;
+        Button btnVerDetalle;
 
 
         public HistorialViewHolder(View base) {
@@ -44,6 +45,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
             tvEstado = (TextView) base.findViewById(R.id.tvEstado);
             ivTipoEntrega = (ImageView) base.findViewById(R.id.ivTipoEntrega);
             btnCancelarPedido = (Button) base.findViewById(R.id.btnCancelarPedido);
+            btnVerDetalle = (Button) base.findViewById(R.id.btnVerDetalle);
 
             btnCancelarPedido.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,6 +58,17 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
                             p.setEstado(Pedido.Estado.CANCELADO);
                             notifyItemChanged(getAdapterPosition());
                     }
+                }
+            });
+
+            btnVerDetalle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Pedido p = listaPedidos.get(getAdapterPosition());
+                    Context context = v.getContext();
+                    Intent i = new Intent(context, NuevoPedido.class);
+                    i.putExtra("idPedidoSeleccionado", p.getId());
+                    context.startActivity(i);
                 }
             });
 

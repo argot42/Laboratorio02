@@ -199,10 +199,6 @@ public class NuevoPedido extends AppCompatActivity {
                     return;
                 }
 
-                //for (PedidoDetalle d : productoSeleccionadoAdapter.getDetalles()) { unPedido.agregarDetalle(d); }
-                /*for (int i = 0; i < productoSeleccionadoAdapter.getDetalles().size(); i++) {
-                    unPedido.agregarDetalle();
-                }*/
                 unPedido.setEstado(Pedido.Estado.REALIZADO);
 
                 repositorioPedido.guardarPedido(unPedido);
