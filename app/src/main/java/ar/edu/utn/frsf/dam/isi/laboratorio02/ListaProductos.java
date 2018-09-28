@@ -35,17 +35,18 @@ public class ListaProductos extends AppCompatActivity {
         final Spinner cmbProductosCategoria = (Spinner) findViewById(R.id.cmbProductosCategoria);
         cmbProductosCategoria.setAdapter(new ArrayAdapter<Categoria>(ListaProductos.this, android.R.layout.simple_spinner_dropdown_item, productoRespository.getCategorias()));
 
-        // actualizar lista de productos al cambiar opción en spinner
+        // inicializar lista
         final RecyclerView lstProductos = (RecyclerView) findViewById(R.id.lstProductos);
         lstProductos.setHasFixedSize(true);
         lstProductos.setLayoutManager(new LinearLayoutManager(this));
         // decoración de la lista
         lstProductos.addItemDecoration(new VerticalSpaceItemDecoration(48));
         lstProductos.addItemDecoration(new DividerItemDecoration(this));
-
+        // setar adapter
         final ProductoAdapter productoAdapter = new ProductoAdapter(productoRespository.buscarPorCategoria(productoRespository.getCategorias().get(0)));
         lstProductos.setAdapter(productoAdapter);
 
+        // actualizar lista de productos al cambiar opción en spinner
         cmbProductosCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

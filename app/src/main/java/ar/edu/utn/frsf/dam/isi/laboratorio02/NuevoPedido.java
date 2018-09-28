@@ -1,58 +1,88 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoSeleccionadoAdapter;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
-
-import static android.R.layout.simple_list_item_single_choice;
-import static ar.edu.utn.frsf.dam.isi.laboratorio02.ListaProductos.LISTAPRODUCTO_REQUEST;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 public class NuevoPedido extends AppCompatActivity {
-
     private Pedido unPedido;
+    private PedidoRepository repositorioPedido = new PedidoRepository();
+    private ProductoRepository repositorioProducto;
 
-    // widgets
-    private EditText edtEmail;
-    private RadioGroup rgPedidoModoEntrega;
-    private EditText edtPedidoDireccion;
-    private EditText edtPedidoHoraEntrega;
-    private Button btnPedidoAddProducto;
+    private ProductoSeleccionadoAdapter productoSeleccionadoAdapter;
+
+    private static int NUEVOPROD = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_pedido);
 
-        unPedido = new Pedido();
+        final EditText edtEmail = (EditText) findViewById(R.id.edtEmail);
+        final RadioGroup optPedidoModoEntrega = (RadioGroup) findViewById(R.id.optPedidoModoEntrega);
+        final EditText edtPedidoDireccion = (EditText) findViewById(R.id.edtPedidoDireccion);
+        final RecyclerView lstProductosSeleccionados = (RecyclerView) findViewById(R.id.lstProductosSeleccionados);
+        final Button btnPedidoAddProducto = (Button) findViewById(R.id.btnPedidoAddProducto);
+        final Button btnPedidoQuitarProducto = (Button) findViewById(R.id.btnPedidoQuitarProducto);
+        final EditText edtPedidoHoraEntrega = (EditText) findViewById(R.id.edtPedidoHoraEntrega);
+        final Button btnPedidoHacerPedido = (Button) findViewById(R.id.btnPedidoHacerPedido);
+        final Button btnPedidoVolver = (Button) findViewById(R.id.btnPedidoVolver);
 
-        // obtener widgets de la vista
-        edtEmail = (EditText) findViewById(R.id.edtEmail);
-        rgPedidoModoEntrega = (RadioGroup) findViewById(R.id.optPedidoModoEntrega);
-        edtPedidoDireccion = (EditText) findViewById(R.id.edtPedidoDireccion);
-        edtPedidoHoraEntrega=(EditText) findViewById(R.id.edtPedidoHoraEntregaDefault);
-        btnPedidoAddProducto=(Button) findViewById(R.id.btnPedidoAddProducto);
+        // si hay extras llenar los campos con esa informacion
+        int idPedidoSeleccionado = getIntent().getIntExtra("idPedidoSeleccionado", -1);
 
-        // setear event listeners
-        // email input
-        // setear event listeners
-        // email input
+        if (idPedidoSeleccionado >= 0) {
+            unPedido = repositorioPedido.buscarPorId(idPedidoSeleccionado);
+
+            edtEmail.setText(unPedido.getMailContacto()); // set email
+
+            // set correct radiobutton
+            if (unPedido.getRetirar()) {
+                optPedidoModoEntrega.check(R.id.optPedidoRetira);
+            } else {
+                optPedidoModoEntrega.check(R.id.optPedidoEnviar);
+            }
+
+            edtPedidoDireccion.setText(unPedido.getDireccionEnvio()); // set direccion envio
+
+            // get time
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            edtPedidoHoraEntrega.setText(dateFormat.format(unPedido.getFecha()));
+
+            productoSeleccionadoAdapter = new ProductoSeleccionadoAdapter(unPedido.getDetalle()); // set detalles
+
+        } else {
+            unPedido = new Pedido();
+            productoSeleccionadoAdapter = new ProductoSeleccionadoAdapter(unPedido.getDetalle());
+        }
+
+        // get email
         edtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -61,7 +91,7 @@ public class NuevoPedido extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                unPedido.setMailContacto(edtEmail.toString());
+                unPedido.setMailContacto(edtEmail.getText().toString());
             }
 
             @Override
@@ -70,26 +100,19 @@ public class NuevoPedido extends AppCompatActivity {
             }
         });
 
-        // Modo de Entrega input
-        rgPedidoModoEntrega.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
+        // get modo entrega
+        optPedidoModoEntrega.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged (RadioGroup group,int checkedId){
-
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.optPedidoRetira) {
-                    //some code
-                    unPedido.setRetirar(TRUE);
-
+                    unPedido.setRetirar(true);
                 } else if (checkedId == R.id.optPedidoEnviar) {
-                    //some code
-                    unPedido.setRetirar(FALSE);
+                    unPedido.setRetirar(false);
                 }
             }
         });
 
-        // pedidoDireccion input
-        // setear event listeners
-        // pedidoDireccion input
+        // get direccion de envío
         edtPedidoDireccion.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -98,7 +121,7 @@ public class NuevoPedido extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                unPedido.setDireccionEnvio(edtPedidoDireccion.toString());
+                unPedido.setDireccionEnvio(edtPedidoDireccion.getText().toString());
             }
 
             @Override
@@ -106,42 +129,116 @@ public class NuevoPedido extends AppCompatActivity {
 
             }
         });
-        final String[] datos= new String[]{"Elem1","Elem2","Elem3"};
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<>(this, simple_list_item_single_choice, datos);
-        ListView listView = findViewById(R.id.lstPedidoItems);
-        listView.setAdapter(itemsAdapter);
 
+        // lista de productos
+        lstProductosSeleccionados.setHasFixedSize(true);
+        lstProductosSeleccionados.setLayoutManager(new LinearLayoutManager(this));
+        //decoracion
+        lstProductosSeleccionados.addItemDecoration(new VerticalSpaceItemDecoration(48));
+        lstProductosSeleccionados.addItemDecoration(new DividerItemDecoration(this));
+        // agregar adaptador
+        lstProductosSeleccionados.setAdapter(productoSeleccionadoAdapter);
 
-
-        // botÃ³n realizar plazo fijo
+        // agregar producto
         btnPedidoAddProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i;
-                i = new Intent(NuevoPedido.this,ListaProductos.class);
-                i.putExtra("NUEVO_PEDIDO",1);
-                startActivityForResult(i,LISTAPRODUCTO_REQUEST);
+                Intent i = new Intent(NuevoPedido.this, ListaProductos.class);
+                i.putExtra("NUEVO_PEDIDO", 1);
+                startActivityForResult(i, NUEVOPROD);
             }
         });
 
-
-
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
-
-        if (resultCode == RESULT_OK) {
-
-            if (requestCode == LISTAPRODUCTO_REQUEST) {
-                Integer id= data.getExtras().getInt("idProducto");
-                Integer cantidad= data.getExtras().getInt("cantidad");
-
+        // quitar producto
+        btnPedidoQuitarProducto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productoSeleccionadoAdapter.deleteSelectedItem();
             }
+        });
 
-        }
+        // hacer pedido
+        btnPedidoHacerPedido.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // check fecha
+                String[] horaIngresada = edtPedidoHoraEntrega.getText().toString().split(":");
 
+                int valorHora = Integer.valueOf(horaIngresada[0]);
+                int valorMinuto = Integer.valueOf(horaIngresada[1]);
+
+                if (valorHora < 0 || valorHora > 23) {
+                    Toast.makeText(NuevoPedido.this, String.format("La hora ingresada (%d) es incorrecta", valorHora), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (valorMinuto < 0 || valorMinuto > 59) {
+                    Toast.makeText(NuevoPedido.this, String.format("Los minutos ingresados (%d) son incorrectos", valorMinuto), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                GregorianCalendar hora = new GregorianCalendar();
+                hora.set(Calendar.HOUR_OF_DAY, valorHora);
+                hora.set(Calendar.MINUTE, valorMinuto);
+                hora.set(Calendar.SECOND, 0);
+                unPedido.setFecha(hora.getTime());
+
+                if (unPedido.getMailContacto() == null || unPedido.getMailContacto().equals("")) {
+                    Toast.makeText(NuevoPedido.this, "El campo Correo Electrónico no puede estar vacío", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (unPedido.getRetirar() == null) {
+                    Toast.makeText(NuevoPedido.this, "El campo Modo Entrega no puede estar vacío", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (unPedido.getDireccionEnvio() == null || unPedido.getDireccionEnvio().equals("")) {
+                    Toast.makeText(NuevoPedido.this, "El campo Dirección de Envío no puede estar vacío", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (productoSeleccionadoAdapter == null || productoSeleccionadoAdapter.getItemCount() == 0) {
+                    Toast.makeText(NuevoPedido.this, "Se deben agregar productos al pedido", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                //for (PedidoDetalle d : productoSeleccionadoAdapter.getDetalles()) { unPedido.agregarDetalle(d); }
+                /*for (int i = 0; i < productoSeleccionadoAdapter.getDetalles().size(); i++) {
+                    unPedido.agregarDetalle();
+                }*/
+                unPedido.setEstado(Pedido.Estado.REALIZADO);
+
+                repositorioPedido.guardarPedido(unPedido);
+
+                Intent i = new Intent(NuevoPedido.this, HistorialPedidos.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        // volver
+        btnPedidoVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == NUEVOPROD) {
+            if (resultCode == RESULT_OK) {
+                int idProducto = data.getExtras().getInt("idProducto");
+                int cantidad = data.getExtras().getInt("cantidad");
+
+                repositorioProducto = new ProductoRepository();
+                Producto nuevoProducto = repositorioProducto.buscarPorId(idProducto);
+                PedidoDetalle pedidoDetalle = new PedidoDetalle(cantidad, nuevoProducto);
+
+                productoSeleccionadoAdapter.addItem(pedidoDetalle);
+
+                final TextView tvTotalPedido = (TextView) findViewById(R.id.tvTotalPedido);
+                tvTotalPedido.setText(String.format("Total pedido: $%.2f", unPedido.total()));
+            }
+        }
+    }
 }

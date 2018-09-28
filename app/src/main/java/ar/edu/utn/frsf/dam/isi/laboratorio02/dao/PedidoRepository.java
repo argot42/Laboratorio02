@@ -15,7 +15,7 @@ public class PedidoRepository {
     }
 
     public void guardarPedido(Pedido p){
-        if(p.getId()!=null && p.getId()>0) {
+        if(p.getId()!=null && p.getId()>=0) {
             LISTA_PEDIDOS.remove(p);
         }else{
             p.setId(GENERADOR_ID_PEDIDO ++);
