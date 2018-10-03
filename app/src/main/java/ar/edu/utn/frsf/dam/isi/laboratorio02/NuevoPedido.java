@@ -207,11 +207,8 @@ public class NuevoPedido extends AppCompatActivity {
 
                 Intent i = new Intent(NuevoPedido.this, HistorialPedidos.class);
                 startActivity(i);
-                finish();
 
-                Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
+                Runnable r = new Runnable() { @Override public void run() {
                         try {
                             Thread.currentThread().sleep(10000);
                         } catch (InterruptedException e) {
@@ -235,6 +232,10 @@ public class NuevoPedido extends AppCompatActivity {
                 };
                 Thread unHilo = new Thread(r);
                 unHilo.start();
+
+                finish();
+
+
 
             }
         });
