@@ -58,7 +58,7 @@ public class ProductoSeleccionadoAdapter extends RecyclerView.Adapter<ProductoSe
         if (lastSelectedPosition < 0) { return; }
 
         detalleList.remove(lastSelectedPosition);
-        notifyItemChanged(lastSelectedPosition);
+        notifyItemRemoved(lastSelectedPosition);
 
         lastSelectedPosition = -1;
     }
