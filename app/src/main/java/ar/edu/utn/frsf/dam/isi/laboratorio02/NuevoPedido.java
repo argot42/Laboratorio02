@@ -214,11 +214,17 @@ public class NuevoPedido extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        // buscar pedidos no aceptados y aceptarlos utomáticamente
+                        // buscar pedidos no aceptados y aceptarlos automáticamente
                         List<Pedido> lista = repositorioPedido.getLista();
                         for(Pedido p:lista){
-                            if(p.getEstado().equals(Pedido.Estado.REALIZADO))
+                            if(p.getEstado().equals(Pedido.Estado.REALIZADO)) {
                                 p.setEstado(Pedido.Estado.ACEPTADO);
+
+                                Intent i = new Intent();
+                                i.setAction(EstadoPedidoReceiver.ESTADO_ACEPTADO);
+                                i.putExtra("idPedido", p.getId());
+                                sendBroadcast(i);
+                            }
                         }
                         runOnUiThread(new Runnable() {
                             @Override
