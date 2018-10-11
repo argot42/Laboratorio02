@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 
 public class EstadoPedidoReceiver extends BroadcastReceiver {
+    public static String ESTADO_ACEPTADO = "ar.edu.utn.frsf.dam.isi.laboratorio2.ESTADO_ACEPTADO";
+    public static String ESTADO_CANCELADO = "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_CANCELADO";
+    public static String ESTADO_EN_PREPARACION = "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_EN_PREPARACION";
+    public static String ESTADO_LISTO = "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_LISTO";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
-        // an Intent broadcast.
-        throw new UnsupportedOperationException("Not yet implemented");
+        System.out.println(intent.getAction());
     }
 }
