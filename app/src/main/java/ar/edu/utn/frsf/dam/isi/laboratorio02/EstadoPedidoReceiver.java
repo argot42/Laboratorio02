@@ -3,6 +3,10 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
+
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class EstadoPedidoReceiver extends BroadcastReceiver {
     public static String ESTADO_ACEPTADO = "ar.edu.utn.frsf.dam.isi.laboratorio2.ESTADO_ACEPTADO";
@@ -12,6 +16,13 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println(intent.getAction());
+        PedidoRepository repositoryPedido= new PedidoRepository();
+
+        if(intent.getAction().equals(ESTADO_ACEPTADO)){
+            int idPedido= intent.getIntExtra("idPedido",-1);
+            Pedido p = repositoryPedido.buscarPorId(idPedido);
+            Toast.makeText(context, "Pedido para "+p.getMailContacto()+"ha cambiado de estado a ACEPTADO", Toast.LENGTH_LONG).show();
+
+        }
     }
 }
