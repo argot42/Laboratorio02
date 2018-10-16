@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class EstadoPedidoReceiver extends BroadcastReceiver {
