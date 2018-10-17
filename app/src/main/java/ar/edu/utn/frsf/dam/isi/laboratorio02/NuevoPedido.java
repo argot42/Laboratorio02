@@ -205,9 +205,6 @@ public class NuevoPedido extends AppCompatActivity {
 
                 repositorioPedido.guardarPedido(unPedido);
 
-                Intent i = new Intent(NuevoPedido.this, HistorialPedidos.class);
-                startActivity(i);
-
                 Runnable r = new Runnable() { @Override public void run() {
                         try {
                             Thread.currentThread().sleep(10000);
@@ -239,10 +236,9 @@ public class NuevoPedido extends AppCompatActivity {
                 Thread unHilo = new Thread(r);
                 unHilo.start();
 
+                Intent i = new Intent(NuevoPedido.this, HistorialPedidos.class);
+                startActivity(i);
                 finish();
-
-
-
             }
         });
 
