@@ -26,6 +26,7 @@ public class HistorialPedidos extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(HistorialPedidos.this, NuevoPedido.class);
                 startActivity(i);
+                finish();
             }
         });
 
