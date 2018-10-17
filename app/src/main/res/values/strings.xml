@@ -35,4 +35,8 @@
     <!-- fila pedidos -->
     <string name="btnCancelarPedido">Cancelar</string>
     <string name="btnVerDetalle">Ver Detalle</string>
+
+    <!-- notification -->
+    <string name="canalEstadoNombre">Cambio de Estado de Pedido</string>
+    <string name="canalEstadoDescripcion">Este canal se utiliza cuando un pedido cambia a estado "ACEPTADO"</string>
 </resources>
