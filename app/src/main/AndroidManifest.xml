@@ -16,9 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListaProductos" />
-        <activity android:name=".HistorialPedidos" />
-        <activity android:name=".NuevoPedido" />
+        <activity android:name=".ListaProductos" android:parentActivityName=".MainActivity" />
+        <activity android:name=".HistorialPedidos" android:parentActivityName=".MainActivity" />
+        <activity android:name=".NuevoPedido" android:parentActivityName=".HistorialPedidos" />
 
         <receiver
             android:name=".EstadoPedidoReceiver"
