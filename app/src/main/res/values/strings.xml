@@ -38,4 +38,5 @@
     <!-- notification -->
     <string name="canalEstadoNombre">Cambio de Estado de Pedido</string>
     <string name="canalEstadoDescripcion">Este canal se utiliza cuando un pedido cambia de estado</string>
+
 </resources>
