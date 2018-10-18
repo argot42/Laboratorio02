@@ -2,6 +2,7 @@
     <!-- MainActivity -->
     <string name="app_name">Laboratorio02</string>
     <string name="main_titulo">Menu de opciones</string>
+    <string name="btnPrepararPedidos">Preparar Pedidos</string>
 
     <!-- ListaProductos -->
     <string name="tvSeleccionarCategoria">Seleccionar una categoría</string>
@@ -9,7 +10,6 @@
     <string name="tvCantidadPedidos">Cantidad a pedir</string>
     <string name="edtProdCantidadDefault">0</string>
     <string name="btnProdAddPedidoText">Agregar</string>
-
 
     <!-- Nuevo Pedido -->
     <string name="pedido_titulo">Datos del Pedido</string>
@@ -26,7 +26,6 @@
     <string name="btnPedidoHacerPedido">Hacer Pedido</string>
     <string name="btnPedidoVolver">Volver</string>
 
-
     <!-- HistorialPedidos -->
     <string name="tvTituloHistorial">Pedidos realizados</string>
     <string name="btnHistorialNuevo">Nuevo</string>
@@ -38,5 +37,6 @@
 
     <!-- notification -->
     <string name="canalEstadoNombre">Cambio de Estado de Pedido</string>
-    <string name="canalEstadoDescripcion">Este canal se utiliza cuando un pedido cambia a estado "ACEPTADO"</string>
+    <string name="canalEstadoDescripcion">Este canal se utiliza cuando un pedido cambia de estado</string>
+
 </resources>
