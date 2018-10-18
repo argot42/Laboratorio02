@@ -60,7 +60,31 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
 
             case ESTADO_EN_PREPARACION: {
                 int idPedido = intent.getIntExtra("idPedido", -1);
-                System.out.println(idPedido);
+                if (idPedido < 0) { return; }
+
+                PedidoRepository pr = new PedidoRepository();
+                Pedido p = pr.buscarPorId(idPedido);
+
+                // notificacion clickeable
+                Intent i = new Intent(context, HistorialPedidos.class);
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                stackBuilder.addNextIntentWithParentStack(i);
+                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                String hour_min = new SimpleDateFormat("HH:mm").format(p.getFecha());
+
+                Notification notification = new NotificationCompat.Builder(context, "CANAL01")
+                        .setSmallIcon(R.drawable.new_post)
+                        .setContentTitle("Tu pedido esta siendo preparado")
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", p.total(), hour_min)))
+                        .setContentIntent(resultPendingIntent)
+                        .build();
+
+                NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
+                nManager.notify(1, notification);
+
                 break;
             }
         }
