@@ -16,22 +16,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListaProductos" android:parentActivityName=".MainActivity" />
-        <activity android:name=".HistorialPedidos" android:parentActivityName=".MainActivity" />
-        <activity android:name=".NuevoPedido" android:parentActivityName=".HistorialPedidos" />
+        <activity
+            android:name=".ListaProductos"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".HistorialPedidos"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".NuevoPedido"
+            android:parentActivityName=".HistorialPedidos" />
 
         <receiver
             android:name=".EstadoPedidoReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio2.ESTADO_ACEPTADO"/>
-                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio2.ESTADO_CANCELADO"/>
-                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio2.ESTADO_EN_REPARACION"/>
-                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio2.ESTADO_LISTO"/>
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO" />
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_CANCELADO" />
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_EN_PREPARACION" />
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_LISTO" />
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".PrepararPedidoService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
