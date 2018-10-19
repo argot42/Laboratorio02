@@ -39,4 +39,9 @@
     <string name="canalEstadoNombre">Cambio de Estado de Pedido</string>
     <string name="canalEstadoDescripcion">Este canal se utiliza cuando un pedido cambia de estado</string>
 
+    <!-- firebase -->
+    <string name="restoNotificationChannelID">CANAL02</string>
+    <string name="restoNotificationChannelName">Resto Notification Channel</string>
+    <string name="restoNotificationChannelDescription">Canal usado para las notificaciones push de firebase</string>
+
 </resources>
