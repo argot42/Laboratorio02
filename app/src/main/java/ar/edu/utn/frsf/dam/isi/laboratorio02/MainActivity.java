@@ -14,12 +14,14 @@ public class MainActivity extends AppCompatActivity {
     private Button btnNuevoPedido;
     private Button btnHistorial;
     private Button btnListaProductos;
+    private Button btnPrepararPedidos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
+        createFirebaseNotificationChannel();
 
         btnNuevoPedido = (Button) findViewById(R.id.btnMainNuevoPedido);
         btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnPrepararPedidos = (Button) findViewById(R.id.btnPrepararPedidos);
+        btnPrepararPedidos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentService = new Intent(MainActivity.this, PrepararPedidoService.class);
+                startService(intentService);
+            }
+        });
     }
 
     private void createNotificationChannel() {
@@ -58,6 +69,20 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel channel = new NotificationChannel("CANAL01", name, importance);
             channel.setDescription(description);
             // registrar el canal en el sistema
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void createFirebaseNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = getString(R.string.restoNotificationChannelID);
+            String channelName = getString(R.string.restoNotificationChannelName);
+            String channelDescription = getString(R.string.restoNotificationChannelDescription);
+
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription(channelDescription);
+
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
