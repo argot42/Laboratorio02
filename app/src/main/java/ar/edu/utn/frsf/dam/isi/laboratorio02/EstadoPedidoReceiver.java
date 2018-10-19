@@ -87,6 +87,31 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
 
                 break;
             }
+
+            case ESTADO_LISTO: {
+                int idPedido = intent.getIntExtra("idPedido", -1);
+                if (idPedido < 0 ) { return; }
+
+                Pedido p = new PedidoRepository().buscarPorId(idPedido);
+
+                Intent i = new Intent(context, HistorialPedidos.class);
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                stackBuilder.addNextIntentWithParentStack(i);
+                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Notification notification = new NotificationCompat.Builder(context, "CANAL02")
+                        .setSmallIcon(R.drawable.new_post)
+                        .setContentTitle("Tu pedido esta listo")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(String.format("El costo será de %.2f", p.total())))
+                        .setContentIntent(resultPendingIntent)
+                        .build();
+
+                NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
+                nManager.notify(2, notification);
+
+                break;
+            }
         }
     }
 }
