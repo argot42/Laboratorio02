@@ -43,3 +43,4 @@
     <string name="restoNotificationChannelID">CANAL02</string>
     <string name="restoNotificationChannelName">Resto Notification Channel</string>
     <string name="restoNotificationChannelDescription">Canal usado para las notificaciones push de firebase</string>
+</resources>
