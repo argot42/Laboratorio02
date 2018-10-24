@@ -1,6 +1,8 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -80,6 +82,23 @@ public class NuevoPedido extends AppCompatActivity {
         } else {
             unPedido = new Pedido();
             productoSeleccionadoAdapter = new ProductoSeleccionadoAdapter(unPedido.getDetalle());
+
+            // completar email y hacer pedido con preferencias
+            SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+            // email
+            String emailDefault = preferencias.getString("prefCorreoDefault", null);
+            if (emailDefault != null) {
+                edtEmail.setText(emailDefault);
+                unPedido.setMailContacto(emailDefault);
+            }
+            // retirar
+            if (preferencias.getBoolean("prefRetirarDefault", false)) {
+                optPedidoModoEntrega.check(R.id.optPedidoRetira);
+                unPedido.setRetirar(true);
+            } else {
+                optPedidoModoEntrega.check(R.id.optPedidoEnviar);
+                unPedido.setRetirar(false);
+            }
         }
 
         // get email
