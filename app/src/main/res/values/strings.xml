@@ -4,6 +4,7 @@
     <string name="main_titulo">Menu de opciones</string>
     <string name="btnPrepararPedidos">Preparar Pedidos</string>
     <string name="btnConfig">Configuración</string>
+    <string name="btnCategorias">Categorias</string>
 
     <!-- ListaProductos -->
     <string name="tvSeleccionarCategoria">Seleccionar una categoría</string>
@@ -52,4 +53,9 @@
     <string name="prefRetirarDefaultSummaryOff">El pedido no es para retirar</string>
     <string name="prefCorreoDefault">Correo electrónico</string>
     <string name="prefCorreoDefaultSummary">Se usará por defecto</string>
+
+    <!-- categoria -->
+    <string name="tvNombreCategoria">Nombre de la categoria</string>
+    <string name="btnCrearCategoria">Guardar</string>
+    <string name="btnCategoriaVolver">Volver</string>
 </resources>

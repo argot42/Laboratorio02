@@ -48,6 +48,7 @@
         </service>
 
         <activity android:name=".ConfigActivity" />
+        <activity android:name=".CategoriaActivity"></activity>
     </application>
 
 </manifest>
