@@ -39,8 +39,12 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         this.productoList = productoList;
     }
 
+    //public void setProductoList(List<Producto> productoList) { this.productoList = productoList; }
+
     public void setProductoList(List<Producto> productoList) {
-        this.productoList = productoList;
+        this.productoList.clear();
+        this.productoList.addAll(productoList);
+        notifyDataSetChanged();
     }
 
     @Override
