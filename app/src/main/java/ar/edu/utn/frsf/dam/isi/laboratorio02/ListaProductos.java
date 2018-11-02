@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoAdapter;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
@@ -27,8 +26,6 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ListaProductos extends AppCompatActivity {
 
@@ -131,7 +128,7 @@ public class ListaProductos extends AppCompatActivity {
     private List<Producto> buscarPorCategoria (List<Producto> prod, Categoria c) {
         List<Producto> resultado = new ArrayList<>();
         for (Producto p:prod) {
-            if (p.getCategoria().getId().equals(c.getId())) resultado.add(p);
+            if (p.getCategoriaId() == c.getId()) resultado.add(p);
         }
         return resultado;
     }

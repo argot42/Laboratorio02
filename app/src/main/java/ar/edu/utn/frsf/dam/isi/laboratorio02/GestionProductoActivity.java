@@ -124,8 +124,17 @@ public class GestionProductoActivity extends AppCompatActivity {
                         edtGestionProdDescripcion.setText(producto.getDescripcion());
                         edtGestionProdPrecio.setText(String.valueOf(producto.getPrecio()));
 
+                        for (int i=0; i<categoriaAdapter.getCount(); i++) {
+                            Categoria cat = categoriaAdapter.getItem(i);
+
+                            if (cat.getId() == producto.getCategoriaId()) {
+                                spGestionProdSpinner.setSelection(categoriaAdapter.getPosition(cat));
+                                break;
+                            }
+                        }
+                        /*
                         categoria_position = categoriaAdapter.getPosition(producto.getCategoria());
-                        spGestionProdSpinner.setSelection(categoria_position);
+                        spGestionProdSpinner.setSelection(categoria_position);*/
                     }
 
                     @Override
@@ -156,7 +165,7 @@ public class GestionProductoActivity extends AppCompatActivity {
 
                 Categoria prod_categoria = (Categoria) spGestionProdSpinner.getItemAtPosition(categoria_position);
 
-                Producto p = new Producto(prod_nombre, prod_descripcion, prod_precio, prod_categoria);
+                Producto p = new Producto(prod_nombre, prod_descripcion, prod_precio, prod_categoria.getId());
 
                 ProductoRetrofit clienteRest = RestClient.getInstance()
                         .getRetrofit()
