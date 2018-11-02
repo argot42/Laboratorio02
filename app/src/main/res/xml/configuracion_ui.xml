@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="prefRetirarDefault"
+        android:summaryOff="@string/prefRetirarDefaultSummaryOff"
+        android:summaryOn="@string/prefRetirarDefaultSummaryOn"
+        android:title="@string/prefRetirarDefault" />
+    <EditTextPreference
+        android:key="prefCorreoDefault"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="@string/prefCorreoDefaultSummary"
+        android:title="@string/prefCorreoDefault" />
+</PreferenceScreen>

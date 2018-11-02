@@ -37,4 +37,22 @@
         android:layout_height="wrap_content"
         android:text="@string/btnPrepararPedidos" />
 
+    <Button
+        android:id="@+id/btnConfig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnConfig" />
+
+    <Button
+        android:id="@+id/btnCategorias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnCategorias" />
+
+    <Button
+        android:id="@+id/btnGestionProducto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnGestionProducto" />
+
 </LinearLayout>

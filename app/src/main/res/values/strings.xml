@@ -3,6 +3,9 @@
     <string name="app_name">Laboratorio02</string>
     <string name="main_titulo">Menu de opciones</string>
     <string name="btnPrepararPedidos">Preparar Pedidos</string>
+    <string name="btnConfig">Configuración</string>
+    <string name="btnCategorias">Categorias</string>
+    <string name="btnGestionProducto">Productos</string>
 
     <!-- ListaProductos -->
     <string name="tvSeleccionarCategoria">Seleccionar una categoría</string>
@@ -43,4 +46,31 @@
     <string name="restoNotificationChannelID">CANAL02</string>
     <string name="restoNotificationChannelName">Resto Notification Channel</string>
     <string name="restoNotificationChannelDescription">Canal usado para las notificaciones push de firebase</string>
+
+    <!-- preferencias -->
+    <string name="prefTitle"></string>
+    <string name="prefRetirarDefault">Retirar por defecto</string>
+    <string name="prefRetirarDefaultSummaryOn">El pedido es para retirar</string>
+    <string name="prefRetirarDefaultSummaryOff">El pedido no es para retirar</string>
+    <string name="prefCorreoDefault">Correo electrónico</string>
+    <string name="prefCorreoDefaultSummary">Se usará por defecto</string>
+
+    <!-- categoria -->
+    <string name="tvNombreCategoria">Nombre de la categoria</string>
+    <string name="btnCrearCategoria">Guardar</string>
+    <string name="btnCategoriaVolver">Volver</string>
+
+    <!-- gestion producto -->
+    <string name="tgGestionProdCrearProdOn">Buscar por ID y Actualizar</string>
+    <string name="tgGestionProdCrearProdOff">Crear producto nuevo</string>
+    <string name="tvGestionProdBuscarProdId">Buscar Producto por ID</string>
+    <string name="btnGestionProdBuscarPorId">Buscar por ID</string>
+    <string name="tvGestionProdDatosProd">Datos del producto</string>
+    <string name="tvGestionProdNombre">Nombre</string>
+    <string name="tvGestionProdDescripcion">Descripcion</string>
+    <string name="tvGestionProdPrecio">Precio</string>
+    <string name="tvGestionProdCategoria">Categoria</string>
+    <string name="btnGestionProdGuardar">Guardar</string>
+    <string name="btnGestionProdBorrar">Borrar</string>
+    <string name="btnGestionProdVolver">Volver</string>
 </resources>
