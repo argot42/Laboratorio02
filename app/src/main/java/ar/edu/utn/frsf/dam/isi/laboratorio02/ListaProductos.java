@@ -32,7 +32,6 @@ import retrofit2.Response;
 
 public class ListaProductos extends AppCompatActivity {
 
-    static final int LISTAPRODUCTO_REQUEST = 9;
     private List<Producto> productos;
 
     @Override
@@ -56,7 +55,8 @@ public class ListaProductos extends AppCompatActivity {
                 try {
                     productos = listarCall.execute().body();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e("LAB_04", String.format("%s: problemas comunicandose con el servidor", e.toString()));
+                    return;
                 }
 
                 runOnUiThread(new Runnable() {
@@ -67,13 +67,11 @@ public class ListaProductos extends AppCompatActivity {
                         cmbProductoCategoria.setAdapter(new ArrayAdapter<Categoria>(ListaProductos.this, android.R.layout.simple_spinner_dropdown_item, cats));
                         cmbProductoCategoria.setSelection(0);
 
-                        //final ProductoAdapter productoAdapter = new ProductoAdapter(productoRepo.buscarPorCategoria(productoRepo.getCategorias().get(0)));
                         final ProductoAdapter productoAdapter = new ProductoAdapter(buscarPorCategoria(productos, cats[0]));
 
                         cmbProductoCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                //productoAdapter.setProductoList(productoRepo.buscarPorCategoria((Categoria) parent.getItemAtPosition(position)));
                                 productoAdapter.setProductoList(buscarPorCategoria(productos, cats[position]));
                             }
 

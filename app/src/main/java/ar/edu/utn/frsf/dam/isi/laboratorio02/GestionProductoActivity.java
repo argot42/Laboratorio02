@@ -34,7 +34,6 @@ public class GestionProductoActivity extends AppCompatActivity {
 
     private ArrayAdapter<Categoria> categoriaAdapter;
 
-    //private Categoria prod_categoria = null;
     private int categoria_position = -1;
     private Boolean actualizacion = false;
     private int prod_id = -1;
@@ -67,7 +66,6 @@ public class GestionProductoActivity extends AppCompatActivity {
         spGestionProdSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //prod_categoria = (Categoria) parent.getItemAtPosition(position);
                 categoria_position = position;
             }
 
