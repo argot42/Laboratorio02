@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriaRest {
-    //private static String url_string = "http://172.16.0.2:1234/categorias";
+    private static String url_string = "http://172.16.0.2:1234/categorias";
     //private static String url_string = "http://192.168.42.57:1234/categorias";
-    private static String url_string = "http://192.168.0.13:1234/categorias";
+    //private static String url_string = "http://192.168.0.13:1234/categorias";
 
     public static void crearCategoria (Categoria c) {
         // variables de conexion y stream de escritura y lectura

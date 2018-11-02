@@ -5,6 +5,7 @@
     <string name="btnPrepararPedidos">Preparar Pedidos</string>
     <string name="btnConfig">Configuración</string>
     <string name="btnCategorias">Categorias</string>
+    <string name="btnGestionProducto">Productos</string>
 
     <!-- ListaProductos -->
     <string name="tvSeleccionarCategoria">Seleccionar una categoría</string>
@@ -58,4 +59,18 @@
     <string name="tvNombreCategoria">Nombre de la categoria</string>
     <string name="btnCrearCategoria">Guardar</string>
     <string name="btnCategoriaVolver">Volver</string>
+
+    <!-- gestion producto -->
+    <string name="tgGestionProdCrearProdOn">Buscar por ID y Actualizar</string>
+    <string name="tgGestionProdCrearProdOff">Crear producto nuevo</string>
+    <string name="tvGestionProdBuscarProdId">Buscar Producto por ID</string>
+    <string name="btnGestionProdBuscarPorId">Buscar por ID</string>
+    <string name="tvGestionProdDatosProd">Datos del producto</string>
+    <string name="tvGestionProdNombre">Nombre</string>
+    <string name="tvGestionProdDescripcion">Descripcion</string>
+    <string name="tvGestionProdPrecio">Precio</string>
+    <string name="tvGestionProdCategoria">Categoria</string>
+    <string name="btnGestionProdGuardar">Guardar</string>
+    <string name="btnGestionProdBorrar">Borrar</string>
+    <string name="btnGestionProdVolver">Volver</string>
 </resources>
