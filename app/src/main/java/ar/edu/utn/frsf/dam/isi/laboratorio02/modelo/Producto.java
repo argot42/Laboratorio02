@@ -8,29 +8,31 @@ public class Producto {
     private String nombre;
     private String descripcion;
     private Double precio;
-    private Categoria categoria;
+    //private Categoria categoria;
+    private int categoriaId;
 
     public Producto() {}
 
-    public Producto(String nombre, String descripcion, Double precio, Categoria categoria) {
+    public Producto(String nombre, String descripcion, Double precio, int categoriaId) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.categoria = categoria;
+        //this.categoria = categoria;
+        this.categoriaId = categoriaId;
     }
 
-    public Producto(String nombre, Double precio, Categoria categoria) {
+    public Producto(String nombre, Double precio, int categoriaId) {
         this.nombre = nombre;
         this.precio = precio;
-        this.categoria = categoria;
+        this.categoriaId = categoriaId;
     }
 
-    public Producto(Integer id, String nombre, String descripcion, Double precio, Categoria categoria) {
+    public Producto(Integer id, String nombre, String descripcion, Double precio, int categoriaId) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.categoria = categoria;
+        this.categoriaId = categoriaId;
     }
 
     public Integer getId() {
@@ -65,13 +67,17 @@ public class Producto {
         this.precio = precio;
     }
 
-    public Categoria getCategoria() {
+    public int getCategoriaId() { return categoriaId; }
+
+    public void setCategoriaId(int categoriaId) { this.categoriaId = categoriaId; }
+
+    /*public Categoria getCategoria() {
         return categoria;
     }
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
-    }
+    }*/
 
 
     @Override
