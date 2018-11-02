@@ -7,104 +7,119 @@
     android:orientation="vertical"
     tools:context=".GestionProductoActivity">
 
-    <ToggleButton
-        android:id="@+id/tgGestionProdCrearProdNuevo"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textOff="@string/tgGestionProdCrearProdOff"
-        android:textOn="@string/tgGestionProdCrearProdOn" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvGestionProdBuscarProdId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/tvGestionProdBuscarProdId" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/edtGestionProdBuscarPorId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number" />
+            <ToggleButton
+                android:id="@+id/tgGestionProdCrearProdNuevo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:textOff="@string/tgGestionProdCrearProdOff"
+                android:textOn="@string/tgGestionProdCrearProdOn" />
 
-    <Button
-        android:id="@+id/btnGestionProdBuscarPorId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btnGestionProdBuscarPorId" />
+            <TextView
+                android:id="@+id/tvGestionProdBuscarProdId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tvGestionProdBuscarProdId" />
 
-    <TextView
-        android:id="@+id/vGestionProdDatosProd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/tvGestionProdDatosProd" />
+            <EditText
+                android:id="@+id/edtGestionProdBuscarPorId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:inputType="number" />
 
-    <TextView
-        android:id="@+id/tvGestionProdNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/tvGestionProdNombre" />
+            <Button
+                android:id="@+id/btnGestionProdBuscarPorId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="@string/btnGestionProdBuscarPorId" />
 
-    <EditText
-        android:id="@+id/edtGestionProdNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
+            <TextView
+                android:id="@+id/tvGestionProdDatosProd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tvGestionProdDatosProd" />
 
-    <TextView
-        android:id="@+id/tvGestionProdDescripcion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/tvGestionProdDescripcion" />
+            <TextView
+                android:id="@+id/tvGestionProdNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tvGestionProdNombre" />
 
-    <EditText
-        android:id="@+id/edtGestionProdDescripcion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/edtGestionProdNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
 
-    <TextView
-        android:id="@+id/tvGestionProdPrecio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/tvGestionProdPrecio" />
+            <TextView
+                android:id="@+id/tvGestionProdDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tvGestionProdDescripcion" />
 
-    <EditText
-        android:id="@+id/edtGestionProdPrecio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="numberDecimal" />
+            <EditText
+                android:id="@+id/edtGestionProdDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
 
-    <TextView
-        android:id="@+id/tvGestionProdCategoria"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/tvGestionProdCategoria" />
+            <TextView
+                android:id="@+id/tvGestionProdPrecio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tvGestionProdPrecio" />
 
-    <Spinner
-        android:id="@+id/spGestionProdSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/edtGestionProdPrecio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
 
-    <Button
-        android:id="@+id/btnGestionProdGuardar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btnGestionProdGuardar" />
+            <TextView
+                android:id="@+id/tvGestionProdCategoria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tvGestionProdCategoria" />
 
-    <Button
-        android:id="@+id/btnGestionProdBorrar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btnGestionProdBorrar" />
+            <Spinner
+                android:id="@+id/spGestionProdSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btnGestionProdVolver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btnGestionProdVolver" />
+            <Button
+                android:id="@+id/btnGestionProdGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btnGestionProdGuardar" />
+
+            <Button
+                android:id="@+id/btnGestionProdBorrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="@string/btnGestionProdBorrar" />
+
+            <Button
+                android:id="@+id/btnGestionProdVolver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btnGestionProdVolver" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
