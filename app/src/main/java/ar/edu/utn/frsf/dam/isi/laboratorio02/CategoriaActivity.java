@@ -2,8 +2,6 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,7 +9,6 @@ import android.widget.Toast;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.CategoriaRest;
 
 public class CategoriaActivity extends AppCompatActivity {
 
@@ -34,7 +31,6 @@ public class CategoriaActivity extends AppCompatActivity {
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        //CategoriaRest.crearCategoria(new Categoria(nombreCategoria));
                         LabDatabase lb = LabDatabase.getDatabase(CategoriaActivity.this);
                         lb.categoriaDao().insert(new Categoria(nombreCategoria));
 
