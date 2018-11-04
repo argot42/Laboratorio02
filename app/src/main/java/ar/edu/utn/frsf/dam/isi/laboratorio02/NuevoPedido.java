@@ -9,12 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -25,15 +23,9 @@ import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoSeleccionadoAdapter;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class NuevoPedido extends AppCompatActivity {
@@ -281,7 +273,7 @@ public class NuevoPedido extends AppCompatActivity {
                 final int idProducto = data.getExtras().getInt("idProducto");
                 final int cantidad = data.getExtras().getInt("cantidad");
 
-                ProductoRetrofit clienteRest = RestClient.getInstance()
+                /*ProductoRetrofit clienteRest = RestClient.getInstance()
                         .getRetrofit()
                         .create(ProductoRetrofit.class);
 
@@ -303,7 +295,7 @@ public class NuevoPedido extends AppCompatActivity {
                         Log.e("LAB_04", call.toString());
                         Log.e("LAB_04", t.toString());
                     }
-                });
+                });*/
 
             }
         }

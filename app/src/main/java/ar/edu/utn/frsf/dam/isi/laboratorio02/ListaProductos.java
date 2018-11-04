@@ -1,31 +1,13 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoAdapter;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
-import retrofit2.Call;
 
 public class ListaProductos extends AppCompatActivity {
 
@@ -37,7 +19,7 @@ public class ListaProductos extends AppCompatActivity {
         setContentView(R.layout.activity_lista_productos);
 
         // esto será ejecutado en segundo plano
-        Runnable r = new Runnable() {
+       /* Runnable r = new Runnable() {
             @Override
             public void run() {
                 CategoriaRest catRest = new CategoriaRest();
@@ -122,7 +104,7 @@ public class ListaProductos extends AppCompatActivity {
         };
 
         Thread hiloCargarCombo = new Thread(r);
-        hiloCargarCombo.start();
+        hiloCargarCombo.start();*/
     }
 
     private List<Producto> buscarPorCategoria (List<Producto> prod, Categoria c) {

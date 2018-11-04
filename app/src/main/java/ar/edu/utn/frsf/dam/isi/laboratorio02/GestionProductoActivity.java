@@ -2,7 +2,6 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,13 +11,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.CategoriaRest;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class GestionProductoActivity extends AppCompatActivity {
     private ToggleButton tgGestionProdCrearProdNuevo;
@@ -103,7 +97,7 @@ public class GestionProductoActivity extends AppCompatActivity {
         btnGestionProdBuscarPorId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prod_id = Integer.valueOf(edtGestionProdBuscarPorId.getText().toString());
+                /*prod_id = Integer.valueOf(edtGestionProdBuscarPorId.getText().toString());
 
                 ProductoRetrofit clienteRest = RestClient.getInstance()
                         .getRetrofit()
@@ -132,9 +126,7 @@ public class GestionProductoActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        /*
-                        categoria_position = categoriaAdapter.getPosition(producto.getCategoria());
-                        spGestionProdSpinner.setSelection(categoria_position);*/
+
                     }
 
                     @Override
@@ -142,7 +134,7 @@ public class GestionProductoActivity extends AppCompatActivity {
                         Log.e("LAB_04", call.toString());
                         Log.e("LAB_04", t.toString());
                     }
-                });
+                });*/
             }
         });
 
@@ -151,7 +143,7 @@ public class GestionProductoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String prod_nombre = edtGestionProdNombre.getText().toString();
+                /*String prod_nombre = edtGestionProdNombre.getText().toString();
                 Log.d("LAB_04", prod_nombre);
                 if (prod_nombre.equals("")) { return; }
 
@@ -206,7 +198,7 @@ public class GestionProductoActivity extends AppCompatActivity {
                             Log.e("LAB_04", t.toString());
                         }
                     });
-                }
+                }*/
             }
         });
 
@@ -214,7 +206,7 @@ public class GestionProductoActivity extends AppCompatActivity {
         btnGestionProdBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductoRetrofit clienteRest = RestClient.getInstance()
+                /*ProductoRetrofit clienteRest = RestClient.getInstance()
                         .getRetrofit()
                         .create(ProductoRetrofit.class);
 
@@ -232,7 +224,7 @@ public class GestionProductoActivity extends AppCompatActivity {
                         Log.e("LAB_04", call.toString());
                         Log.e("LAB_04", t.toString());
                     }
-                });
+                });*/
             }
         });
 
