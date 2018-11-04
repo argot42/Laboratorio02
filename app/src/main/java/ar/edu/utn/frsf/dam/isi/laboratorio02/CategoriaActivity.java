@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.CategoriaRest;
 
@@ -33,7 +34,10 @@ public class CategoriaActivity extends AppCompatActivity {
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        CategoriaRest.crearCategoria(new Categoria(nombreCategoria));
+                        //CategoriaRest.crearCategoria(new Categoria(nombreCategoria));
+                        LabDatabase lb = LabDatabase.getDatabase(CategoriaActivity.this);
+                        lb.categoriaDao().insert(new Categoria(nombreCategoria));
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
