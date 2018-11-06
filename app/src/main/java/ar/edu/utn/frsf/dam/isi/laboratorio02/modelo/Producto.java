@@ -1,45 +1,54 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.util.Objects;
 
+@Entity
 public class Producto {
 
-    private Integer id;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
     private String nombre;
     private String descripcion;
     private Double precio;
-    //private Categoria categoria;
-    private int categoriaId;
+    @Embedded(prefix = "cat_")
+    private Categoria categoria;
 
+    @Ignore
     public Producto() {}
 
-    public Producto(String nombre, String descripcion, Double precio, int categoriaId) {
+    @Ignore
+    public Producto(String nombre, String descripcion, Double precio, Categoria categoria) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        //this.categoria = categoria;
-        this.categoriaId = categoriaId;
+        this.categoria = categoria;
     }
 
-    public Producto(String nombre, Double precio, int categoriaId) {
+    @Ignore
+    public Producto(String nombre, Double precio, Categoria categoria) {
         this.nombre = nombre;
         this.precio = precio;
-        this.categoriaId = categoriaId;
+        this.categoria = categoria;
     }
 
-    public Producto(Integer id, String nombre, String descripcion, Double precio, int categoriaId) {
+    public Producto(long id, String nombre, String descripcion, Double precio, Categoria categoria) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.categoriaId = categoriaId;
+        this.categoria = categoria;
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -67,17 +76,13 @@ public class Producto {
         this.precio = precio;
     }
 
-    public int getCategoriaId() { return categoriaId; }
-
-    public void setCategoriaId(int categoriaId) { this.categoriaId = categoriaId; }
-
-    /*public Categoria getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
-    }*/
+    }
 
 
     @Override

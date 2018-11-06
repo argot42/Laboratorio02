@@ -6,10 +6,13 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
-@Database(entities = {Categoria.class}, version = 1)
+@Database(entities = {Categoria.class, Producto.class}, version = 3, exportSchema = false)
 public abstract class LabDatabase extends RoomDatabase {
+
     public abstract CategoriaDao categoriaDao();
+    public abstract ProductoDao productoDao();
 
     private static volatile LabDatabase INSTANCE;
 
@@ -20,8 +23,9 @@ public abstract class LabDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(
                             context.getApplicationContext(),
                             LabDatabase.class,
-                            "lab_database"
-                    ).build();
+                            "lab_database")
+                            .fallbackToDestructiveMigration()
+                            .build();
                 }
             }
         }
