@@ -16,7 +16,7 @@ public interface CategoriaDao {
     List<Categoria> getAll();
 
     @Insert
-    int insert(Categoria c);
+    long insert(Categoria c);
 
     @Delete
     void delete(Categoria c);

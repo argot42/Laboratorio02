@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -22,15 +23,16 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoSeleccionadoAdapter;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 
 public class NuevoPedido extends AppCompatActivity {
     private Pedido unPedido;
-    private PedidoRepository repositorioPedido = new PedidoRepository();
 
     private ProductoSeleccionadoAdapter productoSeleccionadoAdapter;
 
@@ -52,10 +54,13 @@ public class NuevoPedido extends AppCompatActivity {
         final Button btnPedidoVolver = (Button) findViewById(R.id.btnPedidoVolver);
 
         // si hay extras llenar los campos con esa informacion
-        int idPedidoSeleccionado = getIntent().getIntExtra("idPedidoSeleccionado", -1);
+        final int idPedidoSeleccionado = getIntent().getIntExtra("idPedidoSeleccionado", -1);
+
+        // database
+        final LabDatabase lb = LabDatabase.getDatabase(NuevoPedido.this);
 
         if (idPedidoSeleccionado >= 0) {
-            unPedido = repositorioPedido.buscarPorId(idPedidoSeleccionado);
+            unPedido = lb.pedidoDao().buscarPedidoPorId(idPedidoSeleccionado);
 
             edtEmail.setText(unPedido.getMailContacto()); // set email
 
@@ -216,16 +221,19 @@ public class NuevoPedido extends AppCompatActivity {
 
                 unPedido.setEstado(Pedido.Estado.REALIZADO);
 
-                repositorioPedido.guardarPedido(unPedido);
+                Runnable r = new Runnable() {
+                    @Override public void run() {
+                        // guardar pedido en local db
+                        lb.pedidoDao().insert(unPedido);
 
-                Runnable r = new Runnable() { @Override public void run() {
                         try {
                             Thread.currentThread().sleep(10000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+
                         // buscar pedidos no aceptados y aceptarlos automáticamente
-                        List<Pedido> lista = repositorioPedido.getLista();
+                        List<Pedido> lista = lb.pedidoDao().getAll();
                         for(Pedido p:lista){
                             if(p.getEstado().equals(Pedido.Estado.REALIZADO)) {
                                 p.setEstado(Pedido.Estado.ACEPTADO);
@@ -270,33 +278,33 @@ public class NuevoPedido extends AppCompatActivity {
         if (requestCode == NUEVOPROD) {
             if (resultCode == RESULT_OK) {
 
-                final int idProducto = data.getExtras().getInt("idProducto");
+                final long idProducto = data.getExtras().getLong("idProducto");
                 final int cantidad = data.getExtras().getInt("cantidad");
 
-                /*ProductoRetrofit clienteRest = RestClient.getInstance()
-                        .getRetrofit()
-                        .create(ProductoRetrofit.class);
-
-                Call<Producto> buscarCall = clienteRest.buscarProductoId(idProducto);
-
-                buscarCall.enqueue(new Callback<Producto>() {
+                Runnable r = new Runnable() {
                     @Override
-                    public void onResponse(Call<Producto> call, Response<Producto> response) {
-                        PedidoDetalle pedidoDetalle = new PedidoDetalle(cantidad, response.body());
+                    public void run() {
+                        LabDatabase lb = LabDatabase.getDatabase(NuevoPedido.this);
+
+                        Producto p = lb.productoDao().buscarProductoPorId(idProducto);
+                        if (p == null) return;
+
+                        PedidoDetalle pedidoDetalle = new PedidoDetalle(cantidad, p);
 
                         productoSeleccionadoAdapter.addItem(pedidoDetalle);
 
-                        final TextView tvTotalPedido = (TextView) findViewById(R.id.tvTotalPedido);
-                        tvTotalPedido.setText(String.format("Total pedido: $%.2f", unPedido.total()));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                final TextView tvTotalPedido = (TextView) findViewById(R.id.tvTotalPedido);
+                                tvTotalPedido.setText(String.format("Total pedido: $%.2f", unPedido.total()));
+                            }
+                        });
                     }
+                };
 
-                    @Override
-                    public void onFailure(Call<Producto> call, Throwable t) {
-                        Log.e("LAB_04", call.toString());
-                        Log.e("LAB_04", t.toString());
-                    }
-                });*/
-
+                Thread hiloAgregarDetalle = new Thread(r);
+                hiloAgregarDetalle.start();
             }
         }
     }

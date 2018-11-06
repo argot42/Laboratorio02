@@ -22,5 +22,5 @@ public interface PedidoDao {
     void delete(Pedido p);
 
     @Query("SELECT * FROM Pedido WHERE id = :idPedido")
-    Pedido buscarPedidoPorId(long idPedido);
+    Pedido buscarPedidoPorId(int idPedido);
 }

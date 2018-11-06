@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import java.util.List;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class PrepararPedidoService extends IntentService {
@@ -25,7 +25,8 @@ public class PrepararPedidoService extends IntentService {
             }
 
             // obtenemos lista de pedidos
-            List<Pedido> pedidos = new PedidoRepository().getLista();
+            LabDatabase lb = LabDatabase.getDatabase(this);
+            List<Pedido> pedidos = lb.pedidoDao().getAll();
             // iteramos sobre pedidos cambiando los estados "ACEPTADO" a "EN_PREPARACION"
             // y enviamos un broadcast notificando de dicho cambio
             for (Pedido p:pedidos) {

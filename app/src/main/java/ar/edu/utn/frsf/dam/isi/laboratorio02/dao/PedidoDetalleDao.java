@@ -16,7 +16,7 @@ public interface PedidoDetalleDao {
     List<PedidoDetalle> getAll();
 
     @Insert
-    int insert(PedidoDetalle pd);
+    long insert(PedidoDetalle pd);
 
     @Delete
     void delete(PedidoDetalle pd);

@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.HistorialAdapter;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 
@@ -44,6 +44,16 @@ public class HistorialPedidos extends AppCompatActivity {
         lstHistorial.setLayoutManager(new LinearLayoutManager(this));
         lstHistorial.addItemDecoration(new VerticalSpaceItemDecoration(48));
         lstHistorial.addItemDecoration(new DividerItemDecoration(this));
-        lstHistorial.setAdapter(new HistorialAdapter(new PedidoRepository().getLista()));
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                LabDatabase lb = LabDatabase.getDatabase(HistorialPedidos.this);
+                lstHistorial.setAdapter(new HistorialAdapter(lb.pedidoDao().getAll()));
+            }
+        };
+
+        Thread hiloBuscarPedidos = new Thread(r);
+        hiloBuscarPedidos.start();
     }
 }

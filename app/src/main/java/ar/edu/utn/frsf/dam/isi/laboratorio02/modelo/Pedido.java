@@ -22,7 +22,7 @@ public class Pedido {
     private Integer id;
     @TypeConverters(FechaConverter.class)
     private Date fecha;
-    private Time horaEnvio;
+    //private Time horaEnvio;
     @Ignore
     private List<PedidoDetalle> detalle;
     @TypeConverters(EstadoConverter.class)
@@ -35,13 +35,13 @@ public class Pedido {
         return direccionEnvio;
     }
 
-    public Time getHoraEnvio() {
+    /*public Time getHoraEnvio() {
         return horaEnvio;
     }
 
     public void setHoraEnvio(Time horaEnvio) {
         this.horaEnvio = horaEnvio;
-    }
+    }*/
 
     public void setDireccionEnvio(String direccionEnvio) {
         this.direccionEnvio = direccionEnvio;
@@ -63,7 +63,6 @@ public class Pedido {
         this.retirar = retirar;
     }
 
-    @Ignore
     public Pedido() {
         this.detalle =new ArrayList<>();
     }
@@ -131,7 +130,7 @@ public class Pedido {
         return "Pedido{" +
                 "id=" + id +
                 ", fecha=" + fecha +
-                ", hora Envío=" + horaEnvio +
+                //", hora Envío=" + horaEnvio +
                 ", estado=" + estado +
                 ", direccionEnvio='" + direccionEnvio + '\'' +
                 ", mailContacto='" + mailContacto + '\'' +

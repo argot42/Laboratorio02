@@ -11,7 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import java.text.SimpleDateFormat;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class EstadoPedidoReceiver extends BroadcastReceiver {
@@ -26,89 +26,115 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (action == null) { return; }
 
+        // get database
+        final LabDatabase lb = LabDatabase.getDatabase(context);
+        final Context c = context;
+
         switch (action) {
             case ESTADO_ACEPTADO: {
-                int idPedido = intent.getIntExtra("idPedido", -1);
+                final int idPedido = intent.getIntExtra("idPedido", -1);
 
                 if (idPedido >= 0) {
-                    PedidoRepository pr = new PedidoRepository();
-                    Pedido p = pr.buscarPorId(idPedido);
 
-                    // Hacer notificacion clickeable
-                    Intent i = new Intent(context, NuevoPedido.class);
-                    i.putExtra("idPedidoSeleccionado", p.getId());
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            Pedido p = lb.pedidoDao().buscarPedidoPorId(idPedido);
 
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                    stackBuilder.addNextIntentWithParentStack(i);
-                    PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+                            // Hacer notification clickeable
+                            Intent i = new Intent(c, NuevoPedido.class);
+                            i.putExtra("idPedidoSeleccionado", p.getId());
 
-                    String hour_min = new SimpleDateFormat("HH:mm").format(p.getFecha());
+                            TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
+                            stackBuilder.addNextIntentWithParentStack(i);
+                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    Notification notification = new NotificationCompat.Builder(context, "CANAL01")
-                            .setSmallIcon(R.drawable.new_post)
-                            .setContentTitle("Tu pedido fue aceptado")
-                            .setStyle(new NotificationCompat.BigTextStyle()
-                                    .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", p.total(), hour_min)))
-                            .setContentIntent(resultPendingIntent)
-                            .build();
+                            String hour_min = new SimpleDateFormat("HH:mm").format(p.getFecha());
 
-                    NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
-                    nManager.notify(0, notification);
+                            Notification notification = new NotificationCompat.Builder(c, "CANAL01")
+                                    .setSmallIcon(R.drawable.new_post)
+                                    .setContentTitle("Tu pedido fue aceptado")
+                                    .setStyle(new NotificationCompat.BigTextStyle()
+                                            .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", p.total(), hour_min)))
+                                    .setContentIntent(resultPendingIntent)
+                                    .build();
+
+                            NotificationManagerCompat nManager = NotificationManagerCompat.from(c);
+                            nManager.notify(0, notification);
+                        }
+                    };
+
+                    Thread hiloAceptado = new Thread(r);
+                    hiloAceptado.start();
                 }
+
                 break;
             }
 
             case ESTADO_EN_PREPARACION: {
-                int idPedido = intent.getIntExtra("idPedido", -1);
+                final int idPedido = intent.getIntExtra("idPedido", -1);
                 if (idPedido < 0) { return; }
 
-                PedidoRepository pr = new PedidoRepository();
-                Pedido p = pr.buscarPorId(idPedido);
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        Pedido p = lb.pedidoDao().buscarPedidoPorId(idPedido);
 
-                // notificacion clickeable
-                Intent i = new Intent(context, HistorialPedidos.class);
+                        // notificacion clickeable
+                        Intent i = new Intent(c, HistorialPedidos.class);
 
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                stackBuilder.addNextIntentWithParentStack(i);
-                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
+                        stackBuilder.addNextIntentWithParentStack(i);
+                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                String hour_min = new SimpleDateFormat("HH:mm").format(p.getFecha());
+                        String hour_min = new SimpleDateFormat("HH:mm").format(p.getFecha());
 
-                Notification notification = new NotificationCompat.Builder(context, "CANAL01")
-                        .setSmallIcon(R.drawable.new_post)
-                        .setContentTitle("Tu pedido esta siendo preparado")
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", p.total(), hour_min)))
-                        .setContentIntent(resultPendingIntent)
-                        .build();
+                        Notification notification = new NotificationCompat.Builder(c, "CANAL01")
+                                .setSmallIcon(R.drawable.new_post)
+                                .setContentTitle("Tu pedido esta siendo preparado")
+                                .setStyle(new NotificationCompat.BigTextStyle()
+                                        .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", p.total(), hour_min)))
+                                .setContentIntent(resultPendingIntent)
+                                .build();
 
-                NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
-                nManager.notify(1, notification);
+                        NotificationManagerCompat nManager = NotificationManagerCompat.from(c);
+                        nManager.notify(1, notification);
+                    }
+                };
+
+                Thread hiloEnPreparacion = new Thread(r);
+                hiloEnPreparacion.start();
 
                 break;
             }
 
             case ESTADO_LISTO: {
-                int idPedido = intent.getIntExtra("idPedido", -1);
+                final int idPedido = intent.getIntExtra("idPedido", -1);
                 if (idPedido < 0 ) { return; }
 
-                Pedido p = new PedidoRepository().buscarPorId(idPedido);
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        Pedido p = lb.pedidoDao().buscarPedidoPorId(idPedido);
 
-                Intent i = new Intent(context, HistorialPedidos.class);
+                        Intent i = new Intent(c, HistorialPedidos.class);
 
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                stackBuilder.addNextIntentWithParentStack(i);
-                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
+                        stackBuilder.addNextIntentWithParentStack(i);
+                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                Notification notification = new NotificationCompat.Builder(context, "CANAL02")
-                        .setSmallIcon(R.drawable.new_post)
-                        .setContentTitle("Tu pedido esta listo")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(String.format("El costo será de %.2f", p.total())))
-                        .setContentIntent(resultPendingIntent)
-                        .build();
+                        Notification notification = new NotificationCompat.Builder(c, "CANAL02")
+                                .setSmallIcon(R.drawable.new_post)
+                                .setContentTitle("Tu pedido esta listo")
+                                .setStyle(new NotificationCompat.BigTextStyle().bigText(String.format("El costo será de %.2f", p.total())))
+                                .setContentIntent(resultPendingIntent)
+                                .build();
 
-                NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
-                nManager.notify(2, notification);
+                        NotificationManagerCompat nManager = NotificationManagerCompat.from(c);
+                        nManager.notify(2, notification);
+                    }
+                };
+
 
                 break;
             }
