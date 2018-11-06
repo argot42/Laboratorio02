@@ -1,11 +1,25 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.adapter.ProductoAdapter;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
@@ -18,40 +32,52 @@ public class ListaProductos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_productos);
 
-        // esto será ejecutado en segundo plano
-       /* Runnable r = new Runnable() {
+        Runnable r = new Runnable() {
             @Override
             public void run() {
-                CategoriaRest catRest = new CategoriaRest();
-                final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
+                final LabDatabase lb = LabDatabase.getDatabase(ListaProductos.this);
 
-                ProductoRetrofit clienteRest = RestClient.getInstance()
-                        .getRetrofit()
-                        .create(ProductoRetrofit.class);
+                // obtener categorias
+                final Categoria[] cats = lb.categoriaDao().getAll().toArray(new Categoria[0]);
+                if (cats.length == 0) return;
 
-                Call<List<Producto>> listarCall = clienteRest.listarProductos();
-
-                try {
-                    productos = listarCall.execute().body();
-                } catch (IOException e) {
-                    Log.e("LAB_04", String.format("%s: problemas comunicandose con el servidor", e.toString()));
-                    return;
-                }
+                // obtener productos para primer categoria
+                productos = lb.productoDao().buscarProductosPorCategoria(cats[0].getId());
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // setup spinner
                         final Spinner cmbProductoCategoria = (Spinner) findViewById(R.id.cmbProductosCategoria);
-                        cmbProductoCategoria.setAdapter(new ArrayAdapter<Categoria>(ListaProductos.this, android.R.layout.simple_spinner_dropdown_item, cats));
+                        cmbProductoCategoria.setAdapter(new ArrayAdapter<Categoria>(
+                                ListaProductos.this,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                cats)
+                        );
                         cmbProductoCategoria.setSelection(0);
 
-                        final ProductoAdapter productoAdapter = new ProductoAdapter(buscarPorCategoria(productos, cats[0]));
+                        final ProductoAdapter productoAdapter = new ProductoAdapter(productos);
 
                         cmbProductoCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                productoAdapter.setProductoList(buscarPorCategoria(productos, cats[position]));
+                            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                                // obtener productos para categoria selecionada
+                                Runnable rn = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        productos = lb.productoDao().buscarProductosPorCategoria(cats[position].getId());
+
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                productoAdapter.setProductoList(productos);
+                                            }
+                                        });
+                                    }
+                                };
+
+                                Thread hiloBuscarProductos = new Thread(rn);
+                                hiloBuscarProductos.start();
                             }
 
                             @Override
@@ -104,14 +130,14 @@ public class ListaProductos extends AppCompatActivity {
         };
 
         Thread hiloCargarCombo = new Thread(r);
-        hiloCargarCombo.start();*/
+        hiloCargarCombo.start();
     }
 
-    private List<Producto> buscarPorCategoria (List<Producto> prod, Categoria c) {
+    /*private List<Producto> buscarPorCategoria (List<Producto> prod, Categoria c) {
         List<Producto> resultado = new ArrayList<>();
         for (Producto p:prod) {
             if (p.getCategoriaId() == c.getId()) resultado.add(p);
         }
         return resultado;
-    }
+    }*/
 }
