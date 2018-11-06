@@ -16,11 +16,11 @@ public interface CategoriaDao {
     List<Categoria> getAll();
 
     @Insert
-    long insert(Categoria c);
+    int insert(Categoria c);
 
     @Delete
     void delete(Categoria c);
 
     @Query("SELECT * FROM Categoria WHERE id = :idCategoria")
-    Categoria buscarCategoriaPorId(long idCategoria);
+    Categoria buscarCategoriaPorId(int idCategoria);
 }

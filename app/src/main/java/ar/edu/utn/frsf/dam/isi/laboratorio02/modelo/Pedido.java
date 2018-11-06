@@ -1,18 +1,31 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.EstadoConverter;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.FechaConverter;
+
+@Entity
 public class Pedido {
 
     public enum Estado { REALIZADO, ACEPTADO, RECHAZADO,EN_PREPARACION,LISTO,ENTREGADO,CANCELADO}
 
+    @PrimaryKey(autoGenerate = true)
     private Integer id;
+    @TypeConverters(FechaConverter.class)
     private Date fecha;
     private Time horaEnvio;
+    @Ignore
     private List<PedidoDetalle> detalle;
+    @TypeConverters(EstadoConverter.class)
     private Estado estado;
     private String direccionEnvio;
     private String mailContacto;
@@ -50,6 +63,7 @@ public class Pedido {
         this.retirar = retirar;
     }
 
+    @Ignore
     public Pedido() {
         this.detalle =new ArrayList<>();
     }
@@ -64,6 +78,7 @@ public class Pedido {
         this.retirar = retirar;
     }
 
+    @Ignore
     public Pedido(Date fecha, Estado estado) {
         this();
         this.fecha = fecha;
