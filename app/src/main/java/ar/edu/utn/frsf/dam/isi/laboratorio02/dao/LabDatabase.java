@@ -10,7 +10,7 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
-@Database(entities = {Categoria.class, Producto.class, Pedido.class, PedidoDetalle.class}, version = 4, exportSchema = false)
+@Database(entities = {Categoria.class, Producto.class, Pedido.class, PedidoDetalle.class}, version = 5, exportSchema = false)
 public abstract class LabDatabase extends RoomDatabase {
 
     public abstract CategoriaDao categoriaDao();

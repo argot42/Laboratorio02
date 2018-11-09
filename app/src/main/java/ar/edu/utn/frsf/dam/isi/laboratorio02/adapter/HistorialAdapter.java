@@ -1,6 +1,5 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.NuevoPedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.R;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
@@ -36,7 +36,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
         Button btnVerDetalle;
 
 
-        public HistorialViewHolder(View base) {
+        public HistorialViewHolder(final View base) {
             super(base);
             tvEmailPedido = (TextView) base.findViewById(R.id.tvEmailPedido);
             tvHoraEntrega = (TextView) base.findViewById(R.id.tvHoraEntrega);
@@ -50,13 +50,23 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.Hist
             btnCancelarPedido.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Pedido p = listaPedidos.get(getAdapterPosition());
+                    final Pedido p = listaPedidos.get(getAdapterPosition());
                     switch (p.getEstado()) {
                         case REALIZADO:
                         case ACEPTADO:
                         case EN_PREPARACION:
                             p.setEstado(Pedido.Estado.CANCELADO);
                             notifyItemChanged(getAdapterPosition());
+
+                            Runnable r = new Runnable() {
+                                @Override
+                                public void run() {
+                                    LabDatabase.getDatabase(base.getContext()).pedidoDao().update(p);
+                                }
+                            };
+
+                            Thread t = new Thread(r);
+                            t.start();
                     }
                 }
             });

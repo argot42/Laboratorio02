@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -27,12 +29,15 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.DividerItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.decoration.VerticalSpaceItemDecoration;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoConDetalles;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 
 public class NuevoPedido extends AppCompatActivity {
     private Pedido unPedido;
+    private List<PedidoDetalle> listaDetalles;
+    private List<PedidoDetalle> detallesToDelete = new ArrayList<>();
 
     private ProductoSeleccionadoAdapter productoSeleccionadoAdapter;
 
@@ -54,34 +59,62 @@ public class NuevoPedido extends AppCompatActivity {
         final Button btnPedidoVolver = (Button) findViewById(R.id.btnPedidoVolver);
 
         // si hay extras llenar los campos con esa informacion
-        final int idPedidoSeleccionado = getIntent().getIntExtra("idPedidoSeleccionado", -1);
+        final long idPedidoSeleccionado = getIntent().getLongExtra("idPedidoSeleccionado", -1);
 
         // database
         final LabDatabase lb = LabDatabase.getDatabase(NuevoPedido.this);
 
         if (idPedidoSeleccionado >= 0) {
-            unPedido = lb.pedidoDao().buscarPedidoPorId(idPedidoSeleccionado);
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    PedidoConDetalles pcd = lb.pedidoDao().buscarPedidoPorIdConDetalles(idPedidoSeleccionado);
 
-            edtEmail.setText(unPedido.getMailContacto()); // set email
+                    unPedido = pcd.getPedido();
+                    listaDetalles = pcd.getDetalle();
 
-            // set correct radiobutton
-            if (unPedido.getRetirar()) {
-                optPedidoModoEntrega.check(R.id.optPedidoRetira);
-            } else {
-                optPedidoModoEntrega.check(R.id.optPedidoEnviar);
-            }
+                    Log.d("LAB_04", listaDetalles.toString());
 
-            edtPedidoDireccion.setText(unPedido.getDireccionEnvio()); // set direccion envio
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            edtEmail.setText(unPedido.getMailContacto()); // set email
 
-            // get time
-            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-            edtPedidoHoraEntrega.setText(dateFormat.format(unPedido.getFecha()));
+                            // set correct radiobutton
+                            if (unPedido.getRetirar()) {
+                                optPedidoModoEntrega.check(R.id.optPedidoRetira);
+                            } else {
+                                optPedidoModoEntrega.check(R.id.optPedidoEnviar);
+                            }
 
-            productoSeleccionadoAdapter = new ProductoSeleccionadoAdapter(unPedido.getDetalle()); // set detalles
+                            edtPedidoDireccion.setText(unPedido.getDireccionEnvio()); // set direccion envio
+
+                            // get time
+                            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                            edtPedidoHoraEntrega.setText(dateFormat.format(unPedido.getFecha()));
+
+                            productoSeleccionadoAdapter = new ProductoSeleccionadoAdapter(listaDetalles); // set detalles
+
+                            // lista de productos
+                            lstProductosSeleccionados.setHasFixedSize(true);
+                            lstProductosSeleccionados.setLayoutManager(new LinearLayoutManager(NuevoPedido.this));
+                            //decoracion
+                            lstProductosSeleccionados.addItemDecoration(new VerticalSpaceItemDecoration(48));
+                            lstProductosSeleccionados.addItemDecoration(new DividerItemDecoration(NuevoPedido.this));
+                            // agregar adaptador
+                            lstProductosSeleccionados.setAdapter(productoSeleccionadoAdapter);
+                        }
+                    });
+                }
+            };
+
+            Thread hiloPopularPedido = new Thread(r);
+            hiloPopularPedido.start();
 
         } else {
             unPedido = new Pedido();
-            productoSeleccionadoAdapter = new ProductoSeleccionadoAdapter(unPedido.getDetalle());
+            listaDetalles = new ArrayList<>();
+            productoSeleccionadoAdapter = new ProductoSeleccionadoAdapter(listaDetalles);
 
             // completar email y hacer pedido con preferencias
             SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(this);
@@ -99,6 +132,15 @@ public class NuevoPedido extends AppCompatActivity {
                 optPedidoModoEntrega.check(R.id.optPedidoEnviar);
                 unPedido.setRetirar(false);
             }
+
+            // lista de productos
+            lstProductosSeleccionados.setHasFixedSize(true);
+            lstProductosSeleccionados.setLayoutManager(new LinearLayoutManager(this));
+            //decoracion
+            lstProductosSeleccionados.addItemDecoration(new VerticalSpaceItemDecoration(48));
+            lstProductosSeleccionados.addItemDecoration(new DividerItemDecoration(this));
+            // agregar adaptador
+            lstProductosSeleccionados.setAdapter(productoSeleccionadoAdapter);
         }
 
         // get email
@@ -149,15 +191,6 @@ public class NuevoPedido extends AppCompatActivity {
             }
         });
 
-        // lista de productos
-        lstProductosSeleccionados.setHasFixedSize(true);
-        lstProductosSeleccionados.setLayoutManager(new LinearLayoutManager(this));
-        //decoracion
-        lstProductosSeleccionados.addItemDecoration(new VerticalSpaceItemDecoration(48));
-        lstProductosSeleccionados.addItemDecoration(new DividerItemDecoration(this));
-        // agregar adaptador
-        lstProductosSeleccionados.setAdapter(productoSeleccionadoAdapter);
-
         // agregar producto
         btnPedidoAddProducto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +198,6 @@ public class NuevoPedido extends AppCompatActivity {
                 Intent i = new Intent(NuevoPedido.this, ListaProductos.class);
                 i.putExtra("NUEVO_PEDIDO", 1);
                 startActivityForResult(i, NUEVOPROD);
-
                 }
         });
 
@@ -173,6 +205,7 @@ public class NuevoPedido extends AppCompatActivity {
         btnPedidoQuitarProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                detallesToDelete.add(productoSeleccionadoAdapter.getSelectedDetalle());
                 productoSeleccionadoAdapter.deleteSelectedItem();
             }
         });
@@ -224,8 +257,29 @@ public class NuevoPedido extends AppCompatActivity {
                 Runnable r = new Runnable() {
                     @Override public void run() {
                         // guardar pedido en local db
-                        lb.pedidoDao().insert(unPedido);
+                        if (idPedidoSeleccionado < 0) {
+                            long pedidoId = lb.pedidoDao().insert(unPedido);
 
+                            // guardar detalles
+                            for (PedidoDetalle pd : listaDetalles) {
+                                pd.setIdPedidoAsignado(pedidoId);
+                                lb.pedidoDetalleDao().insert(pd);
+                            }
+
+                        } else {
+                            lb.pedidoDao().update(unPedido);
+
+                            for (PedidoDetalle pd : detallesToDelete) {
+                                lb.pedidoDetalleDao().delete(pd);
+                            }
+
+                            for (PedidoDetalle pd : listaDetalles) {
+                                pd.setIdPedidoAsignado(idPedidoSeleccionado);
+                                lb.pedidoDetalleDao().insert(pd);
+                            }
+                        }
+
+                        // esperar
                         try {
                             Thread.currentThread().sleep(10000);
                         } catch (InterruptedException e) {
@@ -238,12 +292,16 @@ public class NuevoPedido extends AppCompatActivity {
                             if(p.getEstado().equals(Pedido.Estado.REALIZADO)) {
                                 p.setEstado(Pedido.Estado.ACEPTADO);
 
+                                // update db
+                                lb.pedidoDao().update(p);
+
                                 Intent i = new Intent();
                                 i.setAction(EstadoPedidoReceiver.ESTADO_ACEPTADO);
                                 i.putExtra("idPedido", p.getId());
                                 sendBroadcast(i);
                             }
                         }
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -289,15 +347,21 @@ public class NuevoPedido extends AppCompatActivity {
                         Producto p = lb.productoDao().buscarProductoPorId(idProducto);
                         if (p == null) return;
 
-                        PedidoDetalle pedidoDetalle = new PedidoDetalle(cantidad, p);
-
-                        productoSeleccionadoAdapter.addItem(pedidoDetalle);
+                        final PedidoDetalle pedidoDetalle = new PedidoDetalle(cantidad, p);
 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                productoSeleccionadoAdapter.addItem(pedidoDetalle); // agregamos pedido a adapter
+
+
+                                Double total = 0.0;
+                                for (PedidoDetalle pd: listaDetalles) {
+                                    total += pd.getCantidad() * pd.getProducto().getPrecio();
+                                }
+
                                 final TextView tvTotalPedido = (TextView) findViewById(R.id.tvTotalPedido);
-                                tvTotalPedido.setText(String.format("Total pedido: $%.2f", unPedido.total()));
+                                tvTotalPedido.setText(String.format("Total pedido: $%.2f", total));
                             }
                         });
                     }

@@ -68,6 +68,10 @@ public class ProductoSeleccionadoAdapter extends RecyclerView.Adapter<ProductoSe
         notifyItemInserted(this.getItemCount() - 1);
     }
 
+    public PedidoDetalle getSelectedDetalle() {
+        return detalleList.get(lastSelectedPosition);
+    }
+
     public List<PedidoDetalle> getDetalles() {
         return detalleList;
     }

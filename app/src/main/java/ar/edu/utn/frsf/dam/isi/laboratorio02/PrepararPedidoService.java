@@ -34,6 +34,8 @@ public class PrepararPedidoService extends IntentService {
 
                 p.setEstado(Pedido.Estado.EN_PREPARACION);
 
+                lb.pedidoDao().update(p);
+
                 Intent i = new Intent();
                 i.setAction(EstadoPedidoReceiver.ESTADO_EN_PREPARACION);
                 i.putExtra("idPedido", p.getId());
