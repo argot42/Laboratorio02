@@ -132,12 +132,4 @@ public class ListaProductos extends AppCompatActivity {
         Thread hiloCargarCombo = new Thread(r);
         hiloCargarCombo.start();
     }
-
-    /*private List<Producto> buscarPorCategoria (List<Producto> prod, Categoria c) {
-        List<Producto> resultado = new ArrayList<>();
-        for (Producto p:prod) {
-            if (p.getCategoriaId() == c.getId()) resultado.add(p);
-        }
-        return resultado;
-    }*/
 }

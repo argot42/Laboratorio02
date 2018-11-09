@@ -22,5 +22,5 @@ public interface CategoriaDao {
     void delete(Categoria c);
 
     @Query("SELECT * FROM Categoria WHERE id = :idCategoria")
-    Categoria buscarCategoriaPorId(long idCategoria);
+    Categoria buscarCategoriaPorId(int idCategoria);
 }
