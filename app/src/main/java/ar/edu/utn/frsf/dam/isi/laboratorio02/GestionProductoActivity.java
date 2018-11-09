@@ -12,13 +12,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class GestionProductoActivity extends AppCompatActivity {
     private ToggleButton tgGestionProdCrearProdNuevo;
@@ -34,9 +30,9 @@ public class GestionProductoActivity extends AppCompatActivity {
 
     private ArrayAdapter<Categoria> categoriaAdapter;
 
-    private int categoria_position = -1;
     private Boolean actualizacion = false;
-    private int prod_id = -1;
+    private long prod_id = -1;
+    private Categoria categoria_seleccionada = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +42,23 @@ public class GestionProductoActivity extends AppCompatActivity {
         // setup spinner de productos
         spGestionProdSpinner = (Spinner) findViewById(R.id.spGestionProdSpinner);
 
+        // database
+        final LabDatabase lb = LabDatabase.getDatabase(GestionProductoActivity.this);
+
+        // cargar categoria spinner
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                CategoriaRest catRest = new CategoriaRest();
-                final Categoria[] cats = catRest.listarTodas().toArray(new Categoria[0]);
+                final Categoria[] cats = lb.categoriaDao().getAll().toArray(new Categoria[0]);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        categoriaAdapter = new ArrayAdapter<Categoria>(GestionProductoActivity.this, android.R.layout.simple_spinner_dropdown_item, cats);
+                        categoriaAdapter = new ArrayAdapter<Categoria>(
+                                GestionProductoActivity.this,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                cats
+                        );
                         spGestionProdSpinner.setAdapter(categoriaAdapter);
                         spGestionProdSpinner.setSelection(0);
                     }
@@ -66,7 +69,7 @@ public class GestionProductoActivity extends AppCompatActivity {
         spGestionProdSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                categoria_position = position;
+                categoria_seleccionada = (Categoria) parent.getItemAtPosition(position);
             }
 
             @Override
@@ -77,7 +80,6 @@ public class GestionProductoActivity extends AppCompatActivity {
 
         Thread t = new Thread(r);
         t.start();
-
 
         // setup busqueda de producto por ID
         edtGestionProdBuscarPorId = (EditText) findViewById(R.id.edtGestionProdBuscarPorId);
@@ -103,46 +105,32 @@ public class GestionProductoActivity extends AppCompatActivity {
         btnGestionProdBuscarPorId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prod_id = Integer.valueOf(edtGestionProdBuscarPorId.getText().toString());
 
-                ProductoRetrofit clienteRest = RestClient.getInstance()
-                        .getRetrofit()
-                        .create(ProductoRetrofit.class);
-
-                Call<Producto> busquedaCall = clienteRest.buscarProductoId(prod_id);
-
-                busquedaCall.enqueue(new Callback<Producto>() {
+                Runnable r = new Runnable() {
                     @Override
-                    public void onResponse(Call<Producto> call, Response<Producto> response) {
-                        Producto producto = response.body();
+                    public void run() {
+                        prod_id = Long.valueOf(edtGestionProdBuscarPorId.getText().toString());
+
+                        final Producto producto = lb.productoDao().buscarProductoPorId(prod_id);
                         if (producto == null) {
                             Log.e("LAB_04", "No existe producto con este id");
                             return;
                         }
 
-                        edtGestionProdNombre.setText(producto.getNombre());
-                        edtGestionProdDescripcion.setText(producto.getDescripcion());
-                        edtGestionProdPrecio.setText(String.valueOf(producto.getPrecio()));
-
-                        for (int i=0; i<categoriaAdapter.getCount(); i++) {
-                            Categoria cat = categoriaAdapter.getItem(i);
-
-                            if (cat.getId() == producto.getCategoriaId()) {
-                                spGestionProdSpinner.setSelection(categoriaAdapter.getPosition(cat));
-                                break;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                edtGestionProdNombre.setText(producto.getNombre());
+                                edtGestionProdDescripcion.setText(producto.getDescripcion());
+                                edtGestionProdPrecio.setText(String.valueOf(producto.getPrecio()));
+                                spGestionProdSpinner.setSelection(categoriaAdapter.getPosition(producto.getCategoria()));
                             }
-                        }
-                        /*
-                        categoria_position = categoriaAdapter.getPosition(producto.getCategoria());
-                        spGestionProdSpinner.setSelection(categoria_position);*/
+                        });
                     }
+                };
 
-                    @Override
-                    public void onFailure(Call<Producto> call, Throwable t) {
-                        Log.e("LAB_04", call.toString());
-                        Log.e("LAB_04", t.toString());
-                    }
-                });
+                Thread hiloBuscarPorId = new Thread(r);
+                hiloBuscarPorId.start();
             }
         });
 
@@ -163,50 +151,29 @@ public class GestionProductoActivity extends AppCompatActivity {
                 Log.d("LAB_04", String.valueOf(prod_precio));
                 if (prod_precio < 0.0) { return; }
 
-                Categoria prod_categoria = (Categoria) spGestionProdSpinner.getItemAtPosition(categoria_position);
+                final Producto p = new Producto(prod_nombre, prod_descripcion, prod_precio, categoria_seleccionada);
 
-                Producto p = new Producto(prod_nombre, prod_descripcion, prod_precio, prod_categoria.getId());
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        //if (actualizacion) {
+                        //    Log.d("LAB_04", "actualizacion");
+                        //    return;
+                        //}
 
-                ProductoRetrofit clienteRest = RestClient.getInstance()
-                        .getRetrofit()
-                        .create(ProductoRetrofit.class);
-
-                if (actualizacion) {
-
-                    Call<Producto> actualizacionCall = clienteRest.actualizarProducto(prod_id, p);
-
-                    actualizacionCall.enqueue(new Callback<Producto>() {
-                        @Override
-                        public void onResponse(Call<Producto> call, Response<Producto> response) {
-                            Log.d("LAB_04", call.toString());
-                            Log.d("LAB_04", response.toString());
+                        if (actualizacion) {
+                            p.setId(prod_id);
                         }
 
-                        @Override
-                        public void onFailure(Call<Producto> call, Throwable t) {
-                            Log.e("LAB_04", call.toString());
-                            Log.e("LAB_04", t.toString());
-                        }
-                    });
+                        long id = lb.productoDao().insert(p);
 
-                } else {
+                        if (id < 0) { Log.e("LAB_04", String.format("Error al crear el producto [%s]", p.getNombre())); }
+                        else { Log.d("LAB_04", String.format("Producto [%s] creado con id [%d]", p.getNombre(), id)); }
+                    }
+                };
 
-                    Call<Producto> altaCall = clienteRest.crearProducto(p);
-
-                    altaCall.enqueue(new Callback<Producto>() {
-                        @Override
-                        public void onResponse(Call<Producto> call, Response<Producto> response) {
-                            Log.d("LAB_04", call.toString());
-                            Log.d("LAB_04", response.toString());
-                        }
-
-                        @Override
-                        public void onFailure(Call<Producto> call, Throwable t) {
-                            Log.e("LAB_04", call.toString());
-                            Log.e("LAB_04", t.toString());
-                        }
-                    });
-                }
+                Thread hiloCrearUsuario = new Thread(r);
+                hiloCrearUsuario.start();
             }
         });
 
@@ -214,25 +181,16 @@ public class GestionProductoActivity extends AppCompatActivity {
         btnGestionProdBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductoRetrofit clienteRest = RestClient.getInstance()
-                        .getRetrofit()
-                        .create(ProductoRetrofit.class);
 
-                Call<Producto> borrarCall = clienteRest.borrar(prod_id);
-
-                borrarCall.enqueue(new Callback<Producto>() {
+                Runnable r = new Runnable() {
                     @Override
-                    public void onResponse(Call<Producto> call, Response<Producto> response) {
-                        Log.d("LAB_04", call.toString());
-                        Log.d("LAB_04", response.toString());
+                    public void run() {
+                        lb.productoDao().deletePorId(prod_id);
                     }
+                };
 
-                    @Override
-                    public void onFailure(Call<Producto> call, Throwable t) {
-                        Log.e("LAB_04", call.toString());
-                        Log.e("LAB_04", t.toString());
-                    }
-                });
+                Thread hiloBorrarUsuario = new Thread(r);
+                hiloBorrarUsuario.start();
             }
         });
 

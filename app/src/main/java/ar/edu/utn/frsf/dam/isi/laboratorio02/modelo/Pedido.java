@@ -1,18 +1,29 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
-import java.sql.Time;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.EstadoConverter;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.FechaConverter;
+
+@Entity
 public class Pedido {
 
     public enum Estado { REALIZADO, ACEPTADO, RECHAZADO,EN_PREPARACION,LISTO,ENTREGADO,CANCELADO}
 
-    private Integer id;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+    @TypeConverters(FechaConverter.class)
     private Date fecha;
-    private Time horaEnvio;
-    private List<PedidoDetalle> detalle;
+    @Ignore
+    private List<PedidoDetalle> detalle = new ArrayList<>();
+    @TypeConverters(EstadoConverter.class)
     private Estado estado;
     private String direccionEnvio;
     private String mailContacto;
@@ -20,14 +31,6 @@ public class Pedido {
 
     public String getDireccionEnvio() {
         return direccionEnvio;
-    }
-
-    public Time getHoraEnvio() {
-        return horaEnvio;
-    }
-
-    public void setHoraEnvio(Time horaEnvio) {
-        this.horaEnvio = horaEnvio;
     }
 
     public void setDireccionEnvio(String direccionEnvio) {
@@ -51,9 +54,9 @@ public class Pedido {
     }
 
     public Pedido() {
-        this.detalle =new ArrayList<>();
     }
 
+    @Ignore
     public Pedido(Date fecha, List<PedidoDetalle> detalle, Estado estado, String direccionEnvio, String mailContacto, Boolean retirar) {
         this();
         this.fecha = fecha;
@@ -64,17 +67,18 @@ public class Pedido {
         this.retirar = retirar;
     }
 
+    @Ignore
     public Pedido(Date fecha, Estado estado) {
         this();
         this.fecha = fecha;
         this.estado = estado;
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -116,19 +120,10 @@ public class Pedido {
         return "Pedido{" +
                 "id=" + id +
                 ", fecha=" + fecha +
-                ", hora Envío=" + horaEnvio +
                 ", estado=" + estado +
                 ", direccionEnvio='" + direccionEnvio + '\'' +
                 ", mailContacto='" + mailContacto + '\'' +
                 ", retirar=" + retirar +
                 '}';
-    }
-
-    public Double total(){
-        Double total = 0.0;
-        for(PedidoDetalle det: detalle){
-            total+=det.getProducto().getPrecio()*det.getCantidad();
-        }
-        return total;
     }
 }

@@ -11,8 +11,10 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import java.text.SimpleDateFormat;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoConDetalles;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
 public class EstadoPedidoReceiver extends BroadcastReceiver {
     public static final String ESTADO_ACEPTADO = "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO";
@@ -21,94 +23,139 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
     public static final String ESTADO_LISTO = "ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_LISTO";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         if (intent == null) { return; }
         String action = intent.getAction();
         if (action == null) { return; }
 
+        // get database
+        final LabDatabase lb = LabDatabase.getDatabase(context);
+        //final Context c = context;
+
         switch (action) {
             case ESTADO_ACEPTADO: {
-                int idPedido = intent.getIntExtra("idPedido", -1);
+                final long idPedido = intent.getLongExtra("idPedido", -1);
 
                 if (idPedido >= 0) {
-                    PedidoRepository pr = new PedidoRepository();
-                    Pedido p = pr.buscarPorId(idPedido);
 
-                    // Hacer notificacion clickeable
-                    Intent i = new Intent(context, NuevoPedido.class);
-                    i.putExtra("idPedidoSeleccionado", p.getId());
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            //Pedido p = lb.pedidoDao().buscarPedidoPorId(idPedido);
+                            PedidoConDetalles pcd = lb.pedidoDao().buscarPedidoPorIdConDetalles(idPedido);
 
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                    stackBuilder.addNextIntentWithParentStack(i);
-                    PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+                            // Hacer notification clickeable
+                            Intent i = new Intent(context, NuevoPedido.class);
+                            i.putExtra("idPedidoSeleccionado", pcd.getPedido().getId());
 
-                    String hour_min = new SimpleDateFormat("HH:mm").format(p.getFecha());
+                            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                            stackBuilder.addNextIntentWithParentStack(i);
+                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    Notification notification = new NotificationCompat.Builder(context, "CANAL01")
-                            .setSmallIcon(R.drawable.new_post)
-                            .setContentTitle("Tu pedido fue aceptado")
-                            .setStyle(new NotificationCompat.BigTextStyle()
-                                    .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", p.total(), hour_min)))
-                            .setContentIntent(resultPendingIntent)
-                            .build();
+                            String hour_min = new SimpleDateFormat("HH:mm").format(pcd.getPedido().getFecha());
 
-                    NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
-                    nManager.notify(0, notification);
+                            // calcular total
+                            Double total = 0.0;
+                            for (PedidoDetalle pd : pcd.getDetalle()) {
+                                total += pd.getCantidad() * pd.getProducto().getPrecio();
+                            }
+
+                            Notification notification = new NotificationCompat.Builder(context, "CANAL01")
+                                    .setSmallIcon(R.drawable.new_post)
+                                    .setContentTitle("Tu pedido fue aceptado")
+                                    .setStyle(new NotificationCompat.BigTextStyle()
+                                            .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", total, hour_min)))
+                                    .setContentIntent(resultPendingIntent)
+                                    .build();
+
+                            NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
+                            nManager.notify(0, notification);
+                        }
+                    };
+
+                    Thread hiloAceptado = new Thread(r);
+                    hiloAceptado.start();
                 }
+
                 break;
             }
 
             case ESTADO_EN_PREPARACION: {
-                int idPedido = intent.getIntExtra("idPedido", -1);
+                final long idPedido = intent.getLongExtra("idPedido", -1);
                 if (idPedido < 0) { return; }
 
-                PedidoRepository pr = new PedidoRepository();
-                Pedido p = pr.buscarPorId(idPedido);
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        PedidoConDetalles pcd = lb.pedidoDao().buscarPedidoPorIdConDetalles(idPedido);
 
-                // notificacion clickeable
-                Intent i = new Intent(context, HistorialPedidos.class);
+                        // notificacion clickeable
+                        Intent i = new Intent(context, HistorialPedidos.class);
 
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                stackBuilder.addNextIntentWithParentStack(i);
-                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                        stackBuilder.addNextIntentWithParentStack(i);
+                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                String hour_min = new SimpleDateFormat("HH:mm").format(p.getFecha());
+                        String hour_min = new SimpleDateFormat("HH:mm").format(pcd.getPedido().getFecha());
 
-                Notification notification = new NotificationCompat.Builder(context, "CANAL01")
-                        .setSmallIcon(R.drawable.new_post)
-                        .setContentTitle("Tu pedido esta siendo preparado")
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", p.total(), hour_min)))
-                        .setContentIntent(resultPendingIntent)
-                        .build();
+                        // calcular total
+                        Double total = 0.0;
+                        for (PedidoDetalle pd : pcd.getDetalle()) {
+                            total += pd.getCantidad() * pd.getProducto().getPrecio();
+                        }
 
-                NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
-                nManager.notify(1, notification);
+                        Notification notification = new NotificationCompat.Builder(context, "CANAL01")
+                                .setSmallIcon(R.drawable.new_post)
+                                .setContentTitle("Tu pedido esta siendo preparado")
+                                .setStyle(new NotificationCompat.BigTextStyle()
+                                        .bigText(String.format("El costo será de %.2f\nPrevisto el envío para %shs", total, hour_min)))
+                                .setContentIntent(resultPendingIntent)
+                                .build();
+
+                        NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
+                        nManager.notify(1, notification);
+                    }
+                };
+
+                Thread hiloEnPreparacion = new Thread(r);
+                hiloEnPreparacion.start();
 
                 break;
             }
 
             case ESTADO_LISTO: {
-                int idPedido = intent.getIntExtra("idPedido", -1);
+                final long idPedido = intent.getLongExtra("idPedido", -1);
                 if (idPedido < 0 ) { return; }
 
-                Pedido p = new PedidoRepository().buscarPorId(idPedido);
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        PedidoConDetalles pcd = lb.pedidoDao().buscarPedidoPorIdConDetalles(idPedido);
 
-                Intent i = new Intent(context, HistorialPedidos.class);
+                        Intent i = new Intent(context, HistorialPedidos.class);
 
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                stackBuilder.addNextIntentWithParentStack(i);
-                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                        stackBuilder.addNextIntentWithParentStack(i);
+                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                Notification notification = new NotificationCompat.Builder(context, "CANAL02")
-                        .setSmallIcon(R.drawable.new_post)
-                        .setContentTitle("Tu pedido esta listo")
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(String.format("El costo será de %.2f", p.total())))
-                        .setContentIntent(resultPendingIntent)
-                        .build();
+                        // calcular total
+                        Double total = 0.0;
+                        for (PedidoDetalle pd : pcd.getDetalle()) {
+                            total += pd.getCantidad() * pd.getProducto().getPrecio();
+                        }
 
-                NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
-                nManager.notify(2, notification);
+                        Notification notification = new NotificationCompat.Builder(context, "CANAL02")
+                                .setSmallIcon(R.drawable.new_post)
+                                .setContentTitle("Tu pedido esta listo")
+                                .setStyle(new NotificationCompat.BigTextStyle().bigText(String.format("El costo será de %.2f", total)))
+                                .setContentIntent(resultPendingIntent)
+                                .build();
+
+                        NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
+                        nManager.notify(2, notification);
+                    }
+                };
+
 
                 break;
             }

@@ -9,7 +9,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.LabDatabase;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class RestoMessagingService extends FirebaseMessagingService {
@@ -23,10 +23,13 @@ public class RestoMessagingService extends FirebaseMessagingService {
         Map<String, String> data = message.getData();
         if (data.isEmpty()) { return; }
 
-        Pedido pedido = new PedidoRepository().buscarPorId(Integer.parseInt(data.get("ID_PEDIDO")));
+        LabDatabase lb = LabDatabase.getDatabase(this);
+        Pedido pedido = lb.pedidoDao().buscarPedidoPorId(Integer.parseInt(data.get("ID_PEDIDO")));
         if (pedido == null) { return; }
 
         pedido.setEstado(Pedido.Estado.LISTO);
+
+        lb.pedidoDao().update(pedido);
 
         Intent i = new Intent();
         i.setAction(EstadoPedidoReceiver.ESTADO_LISTO);
